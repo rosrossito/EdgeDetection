@@ -1,0 +1,26 @@
+import cv2
+
+import torch
+
+from eve_v1.filters.elementary.elementary_feature_map import get_elementary_feature_map
+from eve_v1.filters.second_level.second_level_feature_map import get_second_level_feature_map
+from eve_v1.filters.third_level.third_level_feature_map import get_third_level_feature_map
+from eve_v1.load_mnist import get_MNIST_train_example
+from eve_v1.visualization.vizualizer import get_pixel_value_pic
+
+# load pic
+gray_img = get_MNIST_train_example()
+# get_pixel_value_pic(gray_img)
+gray_img_tensor = torch.from_numpy(gray_img).unsqueeze(0).unsqueeze(1)
+
+elementary_feature_map = get_elementary_feature_map(gray_img_tensor)
+feature_with_generalization, second_level_feature_map = get_second_level_feature_map (elementary_feature_map)
+third_level_feature_map = get_third_level_feature_map (second_level_feature_map)
+
+# Todo Refine visualization
+# Todo: now we have generalization by angle, need to add generalization by direction (map of directions?) and
+#  spatial generalization (the same angle (or similar if some are absent - pyramid) in different layers) and
+#  maybe layer generalization
+# Todo Back to notes description and create CNN
+
+

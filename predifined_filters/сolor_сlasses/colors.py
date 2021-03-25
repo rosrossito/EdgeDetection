@@ -1,0 +1,35 @@
+import enum
+
+
+class Colors(enum.Enum):
+    yellow_green = (154, 205, 50)
+    dark_olive_green = (85, 107, 47)
+    olive_drab = (107, 142, 35)
+    lawn_green = (124, 252, 0)
+    green_yellow = (173, 255, 47)
+    dark_green = (0, 100, 0)
+    green = (0, 128, 0)
+    forest_green = (34, 139, 34)
+    lime = (0, 255, 0)
+    lime_green = (50, 205, 50)
+    light_green = (144, 238, 144)
+    pale_green = (152, 251, 152)
+    dark_sea_green = (143, 188, 143)
+    medium_spring_green = (0, 250, 154)
+    spring_green = (0, 255, 127)
+    sea_green = (46, 139, 87)
+    medium_aqua_marine = (102, 205, 170)
+    medium_sea_green = (60, 179, 113)
+    light_sea_green = (32, 178, 170)
+    dark_slate_gray = (47, 79, 79)
+    teal = (0, 128, 128)
+    aqua = (0, 255, 255)
+    light_cyan = (224, 255, 255)
+    dark_turquoise = (0, 206, 209)
+    turquoise = (64, 224, 208)
+    medium_turquoise = (72, 209, 204)
+    pale_turquoise = (175, 238, 238)
+    aqua_marine = (127, 255, 212)
+
+def luminance(pixel):
+    return ()

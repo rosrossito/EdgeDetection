@@ -1,16 +1,17 @@
 import torch
 import numpy as np
+import torch.nn.functional as F
 
 from eve_v1.filters.conversion.feature_map_conversion import get_binary_feature_map
 from eve_v1.filters.generalization.generalization_service import generalize
 from eve_v1.filters.second_level.second_level_feature_model import Second_level_net
 from eve_v1.filters.second_level.second_level_filters import create_second_level_filters
-from eve_v1.visualization.vizualizer import get_pixel_value_layer, get_pixel_value_layer1
+from eve_v1.visualization.vizualizer import get_pixel_value_layer_with_icon, get_total_picture
 
 import cv2
 
 
-THRESHOLD_FIRST_LAYER = 0.1
+THRESHOLD_FIRST_LAYER = 0.01
 THRESHOLD_SECOND_LAYER = 1
 
 def get_second_level_feature_map(elementary_feature_map):
@@ -24,11 +25,11 @@ def get_second_level_feature_map(elementary_feature_map):
              cv2.imread("././resources/generalization1.jpg"),
 
              cv2.imread("././resources/180_h.png"),
-             cv2.imread("././resources/180_h.png"),
-             cv2.imread("././resources/180_h.png"),
-             cv2.imread("././resources/180_h.png"),
-             cv2.imread("././resources/180_h.png"),
-             cv2.imread("././resources/180_h.png"),
+             cv2.imread("././resources/180_1d.png"),
+             cv2.imread("././resources/180_v.png"),
+             cv2.imread("././resources/180_2d.png"),
+             cv2.imread("././resources/180_1d.png"),
+             cv2.imread("././resources/180_2d.png"),
 
              cv2.imread("././resources/135.png"),
              cv2.imread("././resources/135.png"),
@@ -58,11 +59,11 @@ def get_second_level_feature_map(elementary_feature_map):
              cv2.imread("././resources/45.png"),
 
              cv2.imread("././resources/180_h.png"),
-             cv2.imread("././resources/180_h.png"),
-             cv2.imread("././resources/180_h.png"),
-             cv2.imread("././resources/180_h.png"),
-             cv2.imread("././resources/180_h.png"),
-             cv2.imread("././resources/180_h.png"),
+             cv2.imread("././resources/180_1d.png"),
+             cv2.imread("././resources/180_v.png"),
+             cv2.imread("././resources/180_2d.png"),
+             cv2.imread("././resources/180_1d.png"),
+             cv2.imread("././resources/180_2d.png"),
 
              cv2.imread("././resources/135.png"),
              cv2.imread("././resources/135.png"),
@@ -114,9 +115,9 @@ def get_second_level_feature_map(elementary_feature_map):
     # 3. For other layers: all elements of input array to other layers are equal to 0 if they less than 1
     # and they are equal to 0.5 otherwise (get_binary_feature_map).
 
-    conv_layer = model.forward(
-        torch.from_numpy(get_binary_feature_map(features_arr, THRESHOLD_FIRST_LAYER)).unsqueeze(
-            0).float())
+    tensor = F.pad(torch.from_numpy(get_binary_feature_map(features_arr, THRESHOLD_FIRST_LAYER)).unsqueeze(
+            0).float(), (0, 1, 0, 1))
+    conv_layer = model.forward(tensor)
 
     binary_conv_layer = get_binary_feature_map(conv_layer.detach().numpy()[0], THRESHOLD_SECOND_LAYER)
 
@@ -127,6 +128,6 @@ def get_second_level_feature_map(elementary_feature_map):
         0).float()
 
     # viz_layer(binary_conv_layer)
-    # get_pixel_value_layer1(binary_conv_layer_with_generalization_feature, icons, len(generalized_binary_conv_layer))
-
+    # get_total_picture(binary_conv_layer_with_generalization_feature_tensor)
+    # get_pixel_value_layer_with_icon(binary_conv_layer_with_generalization_feature_tensor, icons, len(generalized_binary_conv_layer))
     return binary_conv_layer_with_generalization_feature_tensor, torch.from_numpy(binary_conv_layer).unsqueeze(0).float()

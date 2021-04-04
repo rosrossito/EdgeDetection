@@ -2,6 +2,7 @@ from math import ceil
 
 import matplotlib.pyplot as plt
 import numpy as np
+import torch
 
 
 def viz_layer(layer, n_filters=4):
@@ -58,43 +59,38 @@ def draw_kernels(fig, img, n_filters=1, i=0):
                         color='white' if img[x][y] < thresh else 'black', fontsize=6, ha='center', va='center')
 
 
-def get_pixel_value_layer(layer, icons, n_filters=4):
+# def get_pixel_value_layer(layer, icons, n_filters=4):
+#     total_feature_number = 0
+#     for k in range(ceil(n_filters / 4)):
+#         fig = plt.figure(figsize=(20, 20))
+#         end = n_filters if k * 4 + 4 > n_filters else k * 4 + 4
+#         for i in range(k * 4, end):
+#             img = layer[0, i].data.numpy()
+#             draw_kernels(fig, img, 4, i - k * 4)
+#
+#             # draw feature
+#             ax_1 = fig.add_subplot(2, 4, 5)
+#             ax_1.imshow(icons[k])
+#
+#             total_feature_number = total_feature_number + (img > 0).sum()
+#         plt.show()
+#     print("Total feature number in layer: " + str(total_feature_number))
+
+
+def get_pixel_value_layer_with_icon(layer, icons, n_filters=4):
     total_feature_number = 0
     for k in range(ceil(n_filters / 4)):
         fig = plt.figure(figsize=(20, 20))
         end = n_filters if k * 4 + 4 > n_filters else k * 4 + 4
         for i in range(k * 4, end):
             img = layer[0, i].data.numpy()
-            draw_kernels(fig, img, 4, i - k * 4)
-
-            # draw feature
-            ax_1 = fig.add_subplot(2, 4, 5)
-            ax_1.imshow(icons[k])
-
-            total_feature_number = total_feature_number + (img > 0).sum()
-        plt.show()
-    print("Total feature number in layer: " + str(total_feature_number))
-
-
-def get_pixel_value_layer1(layer, icons, n_filters=4):
-    total_feature_number = 0
-    for k in range(ceil(n_filters / 4)):
-        fig = plt.figure(figsize=(20, 20))
-        end = n_filters if k * 4 + 4 > n_filters else k * 4 + 4
-        for i in range(k * 4, end):
-            img = layer[0, i].data.numpy()
-            draw_kernels1(fig, img, icons[i], 4, i - k * 4)
-
-            # draw feature
-            # ax_1 = fig.add_subplot(2, 4, 5)
-            # ax_1.imshow(icons[k])
-
+            draw_kernels_with_icon(fig, img, icons[i], 4, i - k * 4)
             total_feature_number = total_feature_number + (img > 0).sum()
     plt.show(block=True)
     print("Total feature number in layer: " + str(total_feature_number))
 
 
-def draw_kernels1(fig, img, icon, n_filters=1, i=0):
+def draw_kernels_with_icon(fig, img, icon, n_filters=1, i=0):
     ax = fig.add_subplot(2, n_filters, i + 1)
     ax.imshow(img, cmap='gray')
     ax.set_title('Feature number: %s' % str((img > 0).sum()))
@@ -109,3 +105,10 @@ def draw_kernels1(fig, img, icon, n_filters=1, i=0):
 
     ax_1 = fig.add_subplot(2, n_filters, n_filters + i + 1)
     ax_1.imshow(icon)
+
+def get_total_picture(layer):
+    depth_img, height, width = layer[0].shape
+    img = np.zeros((height, width))
+    for feature in layer.detach().numpy()[0][0:depth_img]:
+        img = np.add(img, feature)
+    get_pixel_value_pic(img)

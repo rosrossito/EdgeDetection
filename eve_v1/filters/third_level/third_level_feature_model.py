@@ -6,11 +6,11 @@ import torch.nn.functional as F
 
 class Third_level_net(nn.Module):
 
-    def __init__(self, weight, n_filters):
+    def __init__(self, weight, n_filters, input_channels):
         super(Third_level_net, self).__init__()
         # initializes the weights of the convolutional layer to be the weights of the 4 defined filters
         k_depth, k_height, k_width = weight.shape[1:]
-        self.conv = nn.Conv2d(4, n_filters, kernel_size=(k_depth, k_height, k_width), bias=False)
+        self.conv = nn.Conv2d(input_channels, n_filters, kernel_size=(k_depth, k_height, k_width), bias=False)
         # initializes the weights of the convolutional layer
         self.conv.weight = torch.nn.Parameter(weight)
         # define a pooling layer

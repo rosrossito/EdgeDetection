@@ -233,7 +233,4 @@ def create_third_level_filters(kernel_depth):
         filters.append(get_kernel(kernel_size, kernel_depth,
                                   [[feature + 9, 1, 1], [feature + 30, 1, 2], [reversed_feature + 10, 2, 2]]))
 
-        # dimension = (28, 2, 2)
-        # assert dimension == filters.shape()
-
     return LINE_FILTERS_NUMBER, ANGLE_FILTERS_NUMBER, np.array(filters)

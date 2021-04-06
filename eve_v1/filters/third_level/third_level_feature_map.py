@@ -2,7 +2,8 @@ import cv2
 import torch
 import torch.nn.functional as F
 
-from eve_v1.filters.conversion.feature_map_conversion import get_binary_feature_map
+from eve_v1.filters.conversion.feature_map_conversion import get_binary_feature_map, get_thresholds, \
+    get_binary_feature_map_with_different_thresholds
 from eve_v1.filters.generalization.generalization_service import generalize
 from eve_v1.filters.third_level.third_level_feature_model import Third_level_net
 from eve_v1.filters.third_level.third_level_filters import create_third_level_filters
@@ -276,7 +277,7 @@ def get_third_level_feature_map(second_level_feature_map):
     tensor = F.pad(torch.from_numpy(features_arr).unsqueeze(0).float(), (0, 2, 0, 2))
     conv_layer = model.forward(tensor)
 
-    binary_conv_layer = get_binary_feature_map(conv_layer.detach().numpy()[0], THRESHOLD_THIRD_LAYER)
+    binary_conv_layer = get_binary_feature_map_with_different_thresholds(conv_layer.detach().numpy()[0], get_thresholds(filters))
 
     # To generalize turning of features we need to sum up same features with different angles
     # Second parameter is quantity of filters for lines, third parameter is quantity of different rotation for every feature
@@ -284,9 +285,9 @@ def get_third_level_feature_map(second_level_feature_map):
     binary_conv_layer_with_generalization_feature_tensor = torch.from_numpy(generalized_binary_conv_layer).unsqueeze(
         0).float()
 
-    # get_total_picture(binary_conv_layer_with_generalization_feature_tensor)
-    get_pixel_value_layer_with_icon(binary_conv_layer_with_generalization_feature_tensor, icons,
-                                    26)
+    get_total_picture(binary_conv_layer_with_generalization_feature_tensor)
+    # get_pixel_value_layer_with_icon(binary_conv_layer_with_generalization_feature_tensor, icons,
+    #                                 26)
                                    # len(generalized_binary_conv_layer))
     return binary_conv_layer_with_generalization_feature_tensor, torch.from_numpy(binary_conv_layer).unsqueeze(
         0).float()

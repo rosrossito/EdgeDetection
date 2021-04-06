@@ -2,8 +2,8 @@ import cv2
 import torch
 import torch.nn.functional as F
 
-from eve_v1.filters.elementary.first_level_features_model import First_level_net
-from eve_v1.filters.elementary.first_level_filters import create_first_level_filters
+from eve_v1.filters.first_level.first_level_features_model import First_level_net
+from eve_v1.filters.first_level.first_level_filters import create_first_level_filters
 from eve_v1.visualization.vizualizer import get_pixel_value_layer_with_icon, \
     get_total_picture
 

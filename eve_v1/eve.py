@@ -2,7 +2,7 @@ import cv2
 
 import torch
 
-from eve_v1.filters.elementary.elementary_feature_map import get_elementary_feature_map
+from eve_v1.filters.first_level.elementary_feature_map import get_elementary_feature_map
 from eve_v1.filters.second_level.second_level_feature_map import get_second_level_feature_map
 from eve_v1.filters.third_level.third_level_feature_map import get_third_level_feature_map
 from eve_v1.load_mnist import get_MNIST_train_example

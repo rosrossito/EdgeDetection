@@ -95,7 +95,7 @@ def get_second_level_feature_map(elementary_feature_map):
 
     features_arr = elementary_feature_map.detach().numpy()[0]
 
-    line_filters_number, angle_filters_number, filters = create_second_level_filters(len(features_arr))
+    line_filters_number, angle_filters_number, filters, manually_created_features = create_second_level_filters(len(features_arr))
 
     # instantiate the model and set the weights
     weight = torch.from_numpy(filters).type(torch.FloatTensor)

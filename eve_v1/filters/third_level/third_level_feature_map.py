@@ -2,15 +2,12 @@ import cv2
 import torch
 import torch.nn.functional as F
 
-from eve_v1.filters.conversion.feature_map_conversion import get_binary_feature_map, get_thresholds, \
+from eve_v1.filters.conversion.feature_map_conversion import get_thresholds, \
     get_binary_feature_map_with_different_thresholds
 from eve_v1.filters.generalization.generalization_service import generalize
 from eve_v1.filters.third_level.third_level_feature_model import Third_level_net
 from eve_v1.filters.third_level.third_level_filters import create_third_level_filters
-from eve_v1.visualization.vizualizer import get_pixel_value_layer_with_icon, get_total_picture
-
-# Todo remake thresholds for every kernel (can be 2 or 3)
-THRESHOLD_THIRD_LAYER = 1.5
+from eve_v1.visualization.vizualizer import get_total_picture, get_converted_picture
 
 
 def get_third_level_feature_map(second_level_feature_map):
@@ -254,7 +251,7 @@ def get_third_level_feature_map(second_level_feature_map):
 
     features_arr = second_level_feature_map.detach().numpy()[0]
 
-    line_filters_number, angle_filters_number, filters = create_third_level_filters(len(features_arr))
+    line_filters_number, angle_filters_number, filters, manually_created_features = create_third_level_filters(len(features_arr))
 
     # instantiate the model and set the weights
     weight = torch.from_numpy(filters).type(torch.FloatTensor)
@@ -277,7 +274,8 @@ def get_third_level_feature_map(second_level_feature_map):
     tensor = F.pad(torch.from_numpy(features_arr).unsqueeze(0).float(), (0, 2, 0, 2))
     conv_layer = model.forward(tensor)
 
-    binary_conv_layer = get_binary_feature_map_with_different_thresholds(conv_layer.detach().numpy()[0], get_thresholds(filters))
+    binary_conv_layer = get_binary_feature_map_with_different_thresholds(conv_layer.detach().numpy()[0],
+                                                                         get_thresholds(filters))
 
     # To generalize turning of features we need to sum up same features with different angles
     # Second parameter is quantity of filters for lines, third parameter is quantity of different rotation for every feature
@@ -288,6 +286,7 @@ def get_third_level_feature_map(second_level_feature_map):
     get_total_picture(binary_conv_layer_with_generalization_feature_tensor)
     # get_pixel_value_layer_with_icon(binary_conv_layer_with_generalization_feature_tensor, icons,
     #                                 26)
-                                   # len(generalized_binary_conv_layer))
+    # len(generalized_binary_conv_layer))
+    get_converted_picture(binary_conv_layer, manually_created_features)
     return binary_conv_layer_with_generalization_feature_tensor, torch.from_numpy(binary_conv_layer).unsqueeze(
         0).float()

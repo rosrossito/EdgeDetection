@@ -17,10 +17,10 @@ elementary_feature_map = get_elementary_feature_map(gray_img_tensor)
 feature_with_generalization, second_level_feature_map = get_second_level_feature_map (elementary_feature_map)
 third_level_feature_map = get_third_level_feature_map (second_level_feature_map)
 
-# Todo Refine visualization (add angles)
+# Todo Refine visualisation (add angles)
 # maybe to merge similar features for the output (direct and reversed). They used in different places to build higher features
 # but represent the same
-# check 3 layer presentations - improve visualisation (draw 24*24 pic)
+# check 3 layer presentations - improve visualisation (draw 14*14 pic)
 # Todo: now we have generalization by angle, need to add generalization by direction (map of directions?) and
 #  spatial generalization (the same angle (or similar if some are absent - pyramid) in different layers) and
 #  maybe layer generalization

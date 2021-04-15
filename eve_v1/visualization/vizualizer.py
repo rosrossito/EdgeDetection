@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 
+from eve_v1.visualization.conversion import get_coord, convert_to_picture
+
 
 def viz_layer(layer, n_filters=4):
     for k in range(ceil(n_filters / 4)):
@@ -112,3 +114,8 @@ def get_total_picture(layer):
     for feature in layer.detach().numpy()[0][0:depth_img]:
         img = np.add(img, feature)
     get_pixel_value_pic(img)
+
+def get_converted_picture(binary_conv_layer, manually_created_features):
+    coords = get_coord(binary_conv_layer)
+    pixels = convert_to_picture(coords, manually_created_features)
+

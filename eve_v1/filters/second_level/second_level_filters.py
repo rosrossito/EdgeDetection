@@ -8,6 +8,17 @@ ANGLE_FILTERS_NUMBER = 8
 def create_second_level_filters(kernel_depth):
     kernel_size = 2
     filters = []
+
+    manually_created_features = get_manually_created_feature(kernel_depth)
+
+    for manually_created_feature in manually_created_features:
+        filters.append(get_kernel(kernel_size, kernel_depth, manually_created_feature))
+    return LINE_FILTERS_NUMBER, ANGLE_FILTERS_NUMBER, np.array(filters), manually_created_features
+
+
+def get_manually_created_feature(kernel_depth):
+    manually_created_feature: []
+
     reversed_step = int(kernel_depth / 2)
     features_types = [0, reversed_step]
 
@@ -22,51 +33,41 @@ def create_second_level_filters(kernel_depth):
 
         # lines (180 degree)
         # parameters: kernel number, column, raw
-        filters.append(
-            get_kernel(kernel_size, kernel_depth, [[reversed_feature + 1, 1, 1], [reversed_feature + 1, 2, 1]]))
-        filters.append(get_kernel(kernel_size, kernel_depth, [[feature + 2, 1, 1], [feature + 2, 2, 2]]))
-        filters.append(get_kernel(kernel_size, kernel_depth, [[feature + 3, 1, 1], [feature + 3, 1, 2]]))
-        filters.append(get_kernel(kernel_size, kernel_depth, [[feature + 4, 2, 1], [feature + 4, 1, 2]]))
-        filters.append(get_kernel(kernel_size, kernel_depth, [[feature + 5, 1, 1], [feature + 5, 2, 2]]))
-        filters.append(get_kernel(kernel_size, kernel_depth, [[feature + 6, 1, 2], [feature + 6, 2, 1]]))
+        manually_created_feature.append([[reversed_feature + 1, 1, 1], [reversed_feature + 1, 2, 1]])
+        manually_created_feature.append([[feature + 2, 1, 1], [feature + 2, 2, 2]])
+        manually_created_feature.append([[feature + 3, 1, 1], [feature + 3, 1, 2]])
+        manually_created_feature.append([[feature + 4, 2, 1], [feature + 4, 1, 2]])
+        manually_created_feature.append([[feature + 5, 1, 1], [feature + 5, 2, 2]])
+        manually_created_feature.append([[feature + 6, 1, 2], [feature + 6, 2, 1]])
 
         # 135 degree
-        filters.append(
-            get_kernel(kernel_size, kernel_depth, [[reversed_feature + 5, 1, 1], [reversed_feature + 1, 2, 2]]))
-        filters.append(get_kernel(kernel_size, kernel_depth, [[feature + 3, 1, 1], [feature + 2, 1, 2]]))
-        filters.append(get_kernel(kernel_size, kernel_depth, [[feature + 4, 1, 1], [feature + 3, 1, 2]]))
-        filters.append(get_kernel(kernel_size, kernel_depth, [[feature + 6, 1, 1], [feature + 1, 2, 1]]))
-        filters.append(get_kernel(kernel_size, kernel_depth, [[feature + 1, 1, 1], [feature + 5, 2, 1]]))
-        filters.append(
-            get_kernel(kernel_size, kernel_depth, [[reversed_feature + 2, 1, 1], [reversed_feature + 3, 2, 2]]))
-        filters.append(
-            get_kernel(kernel_size, kernel_depth, [[reversed_feature + 3, 2, 1], [reversed_feature + 4, 1, 2]]))
-        filters.append(
-            get_kernel(kernel_size, kernel_depth, [[reversed_feature + 1, 1, 2], [reversed_feature + 6, 2, 1]]))
+        manually_created_feature.append([[reversed_feature + 5, 1, 1], [reversed_feature + 1, 2, 2]])
+        manually_created_feature.append([[feature + 3, 1, 1], [feature + 2, 1, 2]])
+        manually_created_feature.append([[feature + 4, 1, 1], [feature + 3, 1, 2]])
+        manually_created_feature.append([[feature + 6, 1, 1], [feature + 1, 2, 1]])
+        manually_created_feature.append([[feature + 1, 1, 1], [feature + 5, 2, 1]])
+        manually_created_feature.append([[reversed_feature + 2, 1, 1], [reversed_feature + 3, 2, 2]])
+        manually_created_feature.append([[reversed_feature + 3, 2, 1], [reversed_feature + 4, 1, 2]])
+        manually_created_feature.append([[reversed_feature + 1, 1, 2], [reversed_feature + 6, 2, 1]])
 
         # 90 degree
-        filters.append(get_kernel(kernel_size, kernel_depth, [[feature + 3, 1, 1], [reversed_feature + 1, 2, 2]]))
-        filters.append(get_kernel(kernel_size, kernel_depth, [[feature + 4, 1, 1], [feature + 2, 1, 2]]))
-        filters.append(get_kernel(kernel_size, kernel_depth, [[feature + 1, 2, 1], [feature + 3, 1, 2]]))
-        filters.append(get_kernel(kernel_size, kernel_depth, [[feature + 6, 1, 1], [feature + 5, 2, 1]]))
-        filters.append(get_kernel(kernel_size, kernel_depth, [[feature + 1, 1, 1], [reversed_feature + 3, 2, 2]]))
-        filters.append(
-            get_kernel(kernel_size, kernel_depth, [[reversed_feature + 2, 1, 1], [reversed_feature + 4, 1, 2]]))
-        filters.append(
-            get_kernel(kernel_size, kernel_depth, [[reversed_feature + 1, 1, 2], [reversed_feature + 3, 2, 1]]))
-        filters.append(
-            get_kernel(kernel_size, kernel_depth, [[reversed_feature + 5, 1, 1], [reversed_feature + 6, 2, 1]]))
+        manually_created_feature.append([[feature + 3, 1, 1], [reversed_feature + 1, 2, 2]])
+        manually_created_feature.append([[feature + 4, 1, 1], [feature + 2, 1, 2]])
+        manually_created_feature.append([[feature + 1, 2, 1], [feature + 3, 1, 2]])
+        manually_created_feature.append([[feature + 6, 1, 1], [feature + 5, 2, 1]])
+        manually_created_feature.append([[feature + 1, 1, 1], [reversed_feature + 3, 2, 2]])
+        manually_created_feature.append([[reversed_feature + 2, 1, 1], [reversed_feature + 4, 1, 2]])
+        manually_created_feature.append([[reversed_feature + 1, 1, 2], [reversed_feature + 3, 2, 1]])
+        manually_created_feature.append([[reversed_feature + 5, 1, 1], [reversed_feature + 6, 2, 1]])
 
         # 45 degree
-        filters.append(get_kernel(kernel_size, kernel_depth, [[feature + 4, 1, 1], [reversed_feature + 1, 2, 2]]))
-        filters.append(get_kernel(kernel_size, kernel_depth, [[feature + 1, 2, 1], [feature + 2, 1, 2]]))
-        filters.append(get_kernel(kernel_size, kernel_depth, [[feature + 3, 1, 2], [feature + 5, 2, 1]]))
-        filters.append(get_kernel(kernel_size, kernel_depth, [[feature + 6, 1, 1], [reversed_feature + 3, 2, 2]]))
-        filters.append(get_kernel(kernel_size, kernel_depth, [[feature + 1, 1, 1], [reversed_feature + 4, 1, 2]]))
-        filters.append(
-            get_kernel(kernel_size, kernel_depth, [[reversed_feature + 2, 1, 1], [reversed_feature + 1, 1, 2]]))
-        filters.append(
-            get_kernel(kernel_size, kernel_depth, [[reversed_feature + 5, 1, 1], [reversed_feature + 3, 2, 1]]))
-        filters.append(get_kernel(kernel_size, kernel_depth, [[feature + 3, 1, 1], [reversed_feature + 6, 2, 1]]))
+        manually_created_feature.append([[feature + 4, 1, 1], [reversed_feature + 1, 2, 2]])
+        manually_created_feature.append([[feature + 1, 2, 1], [feature + 2, 1, 2]])
+        manually_created_feature.append([[feature + 3, 1, 2], [feature + 5, 2, 1]])
+        manually_created_feature.append([[feature + 6, 1, 1], [reversed_feature + 3, 2, 2]])
+        manually_created_feature.append([[feature + 1, 1, 1], [reversed_feature + 4, 1, 2]])
+        manually_created_feature.append([[reversed_feature + 2, 1, 1], [reversed_feature + 1, 1, 2]])
+        manually_created_feature.append([[reversed_feature + 5, 1, 1], [reversed_feature + 3, 2, 1]])
+        manually_created_feature.append([[feature + 3, 1, 1], [reversed_feature + 6, 2, 1]])
 
-    return LINE_FILTERS_NUMBER, ANGLE_FILTERS_NUMBER, np.array(filters)
+        return manually_created_feature

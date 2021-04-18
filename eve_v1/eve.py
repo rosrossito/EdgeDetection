@@ -14,8 +14,10 @@ gray_img = get_MNIST_train_example()
 gray_img_tensor = torch.from_numpy(gray_img).unsqueeze(0).unsqueeze(1)
 
 elementary_feature_map = get_elementary_feature_map(gray_img_tensor)
-feature_with_generalization, second_level_feature_map = get_second_level_feature_map (elementary_feature_map)
-third_level_feature_map = get_third_level_feature_map (second_level_feature_map)
+second_level_feature_with_generalization, second_level_feature_map, second_level_manually_created_features = get_second_level_feature_map(
+    elementary_feature_map)
+third__level_feature_with_generalization, third_level_feature_map = get_third_level_feature_map(
+    second_level_feature_map, second_level_manually_created_features)
 
 # Todo Refine visualisation (add angles)
 # maybe to merge similar features for the output (direct and reversed). They used in different places to build higher features
@@ -26,5 +28,3 @@ third_level_feature_map = get_third_level_feature_map (second_level_feature_map)
 #  maybe layer generalization
 # + affine transformation - incline
 # Todo Back to notes description and create CNN
-
-

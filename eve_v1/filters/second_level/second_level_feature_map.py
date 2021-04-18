@@ -10,9 +10,9 @@ from eve_v1.visualization.vizualizer import get_pixel_value_layer_with_icon, get
 
 import cv2
 
-
 THRESHOLD_FIRST_LAYER = 0.01
 THRESHOLD_SECOND_LAYER = 1
+
 
 def get_second_level_feature_map(elementary_feature_map):
     icons = [cv2.imread("././resources/generalization1.jpg"),
@@ -95,7 +95,8 @@ def get_second_level_feature_map(elementary_feature_map):
 
     features_arr = elementary_feature_map.detach().numpy()[0]
 
-    line_filters_number, angle_filters_number, filters, manually_created_features = create_second_level_filters(len(features_arr))
+    line_filters_number, angle_filters_number, filters, manually_created_features = create_second_level_filters(
+        len(features_arr))
 
     # instantiate the model and set the weights
     weight = torch.from_numpy(filters).type(torch.FloatTensor)
@@ -116,7 +117,7 @@ def get_second_level_feature_map(elementary_feature_map):
     # and they are equal to 0.5 otherwise (get_binary_feature_map).
 
     tensor = F.pad(torch.from_numpy(get_binary_feature_map(features_arr, THRESHOLD_FIRST_LAYER)).unsqueeze(
-            0).float(), (0, 1, 0, 1))
+        0).float(), (0, 1, 0, 1))
     conv_layer = model.forward(tensor)
 
     binary_conv_layer = get_binary_feature_map(conv_layer.detach().numpy()[0], THRESHOLD_SECOND_LAYER)
@@ -130,4 +131,5 @@ def get_second_level_feature_map(elementary_feature_map):
     # viz_layer(binary_conv_layer)
     # get_total_picture(binary_conv_layer_with_generalization_feature_tensor)
     # get_pixel_value_layer_with_icon(binary_conv_layer_with_generalization_feature_tensor, icons, len(generalized_binary_conv_layer))
-    return binary_conv_layer_with_generalization_feature_tensor, torch.from_numpy(binary_conv_layer).unsqueeze(0).float()
+    return binary_conv_layer_with_generalization_feature_tensor, torch.from_numpy(binary_conv_layer).unsqueeze(
+        0).float(), manually_created_features

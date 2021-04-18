@@ -10,7 +10,7 @@ from eve_v1.filters.third_level.third_level_filters import create_third_level_fi
 from eve_v1.visualization.vizualizer import get_total_picture, get_converted_picture
 
 
-def get_third_level_feature_map(second_level_feature_map):
+def get_third_level_feature_map(second_level_feature_map, second_level_manually_created_features):
     icons = [cv2.imread("././resources/generalization1.jpg"),
              cv2.imread("././resources/generalization1.jpg"),
              cv2.imread("././resources/generalization1.jpg"),
@@ -287,6 +287,6 @@ def get_third_level_feature_map(second_level_feature_map):
     # get_pixel_value_layer_with_icon(binary_conv_layer_with_generalization_feature_tensor, icons,
     #                                 26)
     # len(generalized_binary_conv_layer))
-    get_converted_picture(binary_conv_layer, manually_created_features)
+    get_converted_picture(binary_conv_layer, manually_created_features, second_level_manually_created_features)
     return binary_conv_layer_with_generalization_feature_tensor, torch.from_numpy(binary_conv_layer).unsqueeze(
         0).float()

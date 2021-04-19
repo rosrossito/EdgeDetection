@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 
-from eve_v1.visualization.conversion import get_coord, convert_third_level_feature
+from eve_v1.visualization.conversion import get_coord, convert_third_level_feature, convert_second_level_feature
 
 
 def viz_layer(layer, n_filters=4):
@@ -119,5 +119,5 @@ def get_converted_picture(binary_conv_layer, manually_created_features, second_l
     coords = get_coord(binary_conv_layer)
     img = np.zeros((14, 14), dtype="float32")
     next_level_conversion_data = convert_third_level_feature(coords, manually_created_features)
-    convert_second_level_feature(next_level_conversion_data)
-
+    next_level_conversion_data = convert_second_level_feature(next_level_conversion_data, second_level_manually_created_features)
+    pixels_coords = convert_first_level_feature(next_level_conversion_data)

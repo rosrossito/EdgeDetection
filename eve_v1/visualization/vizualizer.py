@@ -2,9 +2,9 @@ from math import ceil
 
 import matplotlib.pyplot as plt
 import numpy as np
-import torch
 
-from eve_v1.visualization.conversion import get_coord, convert_third_level_feature, convert_second_level_feature
+from eve_v1.visualization.conversion import get_coord, convert_third_level_feature, convert_second_level_feature, \
+    convert_first_level_feature
 
 
 def viz_layer(layer, n_filters=4):
@@ -108,6 +108,7 @@ def draw_kernels_with_icon(fig, img, icon, n_filters=1, i=0):
     ax_1 = fig.add_subplot(2, n_filters, n_filters + i + 1)
     ax_1.imshow(icon)
 
+
 def get_total_picture(layer):
     depth_img, height, width = layer[0].shape
     img = np.zeros((height, width))
@@ -115,9 +116,15 @@ def get_total_picture(layer):
         img = np.add(img, feature)
     get_pixel_value_pic(img)
 
+
 def get_converted_picture(binary_conv_layer, manually_created_features, second_level_manually_created_features):
     coords = get_coord(binary_conv_layer)
     img = np.zeros((14, 14), dtype="float32")
     next_level_conversion_data = convert_third_level_feature(coords, manually_created_features)
-    next_level_conversion_data = convert_second_level_feature(next_level_conversion_data, second_level_manually_created_features)
+    next_level_conversion_data = convert_second_level_feature(next_level_conversion_data,
+                                                              second_level_manually_created_features)
     pixels_coords = convert_first_level_feature(next_level_conversion_data)
+    for pixels_coord in pixels_coords:
+        img[pixels_coord[0], pixels_coord[1]] = 255
+    plt.imshow(img, cmap='Visualisation')
+    plt.show()

@@ -17,7 +17,7 @@ def create_second_level_filters(kernel_depth):
 
 
 def get_manually_created_feature(kernel_depth):
-    manually_created_feature: []
+    manually_created_feature = []
 
     reversed_step = int(kernel_depth / 2)
     features_types = [0, reversed_step]
@@ -70,4 +70,4 @@ def get_manually_created_feature(kernel_depth):
         manually_created_feature.append([[reversed_feature + 5, 1, 1], [reversed_feature + 3, 2, 1]])
         manually_created_feature.append([[feature + 3, 1, 1], [reversed_feature + 6, 2, 1]])
 
-        return manually_created_feature
+    return manually_created_feature

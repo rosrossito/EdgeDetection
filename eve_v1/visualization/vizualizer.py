@@ -119,12 +119,12 @@ def get_total_picture(layer):
 
 def get_converted_picture(binary_conv_layer, manually_created_features, second_level_manually_created_features):
     coords = get_coord(binary_conv_layer)
-    img = np.zeros((14, 14), dtype="float32")
+    img = np.zeros((16, 16), dtype="float32")
     next_level_conversion_data = convert_third_level_feature(coords, manually_created_features)
     next_level_conversion_data = convert_second_level_feature(next_level_conversion_data,
                                                               second_level_manually_created_features)
     pixels_coords = convert_first_level_feature(next_level_conversion_data)
     for pixels_coord in pixels_coords:
         img[pixels_coord[0], pixels_coord[1]] = 255
-    plt.imshow(img, cmap='Visualisation')
+    plt.imshow(img, cmap='gray')
     plt.show()

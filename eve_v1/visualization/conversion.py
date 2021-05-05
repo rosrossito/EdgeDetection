@@ -7,8 +7,9 @@ def convert_third_level_feature(coords, feature_offsets):
         for coord in feature_coords:
             for feature_offset in feature_offset_raw:
                 if len(coord) > 0:
-                    x = coord[0] + feature_offset[2]
-                    y = coord[1] + feature_offset[1]
+                    # column, raw
+                    x = coord[0] + feature_offset[1]
+                    y = coord[1] + feature_offset[2]
                     next_level_conversion_data.append([[x, y], feature_offset[0]])
     return next_level_conversion_data
 
@@ -16,9 +17,9 @@ def convert_third_level_feature(coords, feature_offsets):
 def convert_second_level_feature(previous_coords_feature, feature_offsets):
     next_level_conversion_data = []
     for feature in previous_coords_feature:
-        for feature_offset in feature_offsets[feature[1]]:
-            x = feature[0][0] + feature_offset[2]
-            y = feature[0][1] + feature_offset[1]
+        for feature_offset in feature_offsets[feature[1] - 1]:
+            x = feature[0][0] + feature_offset[1]
+            y = feature[0][1] + feature_offset[2]
             next_level_conversion_data.append([[x, y], feature_offset[0]])
     return next_level_conversion_data
 
@@ -35,9 +36,17 @@ def convert_first_level_feature(previous_coords_feature):
 
 
 def get_coord(features):
+    # raw, column
     coords = []
     for feature in features:
-        coords.append(np.where(feature > 0)[0])
+        # raw idx and col idx
+        raw, col = np.where(feature > 0)
+        x_y = []
+        if len(raw) > 0:
+            for y, x in zip(raw, col):
+                x_y.append([x, y])
+        coords.append(x_y)
+    # column, raw
     return coords
 
 

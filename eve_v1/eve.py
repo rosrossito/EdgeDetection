@@ -6,11 +6,15 @@ from eve_v1.filters.first_level.elementary_feature_map import get_elementary_fea
 from eve_v1.filters.second_level.second_level_feature_map import get_second_level_feature_map
 from eve_v1.filters.third_level.third_level_feature_map import get_third_level_feature_map
 from eve_v1.load_mnist import get_MNIST_train_example
+from eve_v1.utils import save_image, load_Image
 from eve_v1.visualization.vizualizer import get_pixel_value_pic
 
 # load pic
-gray_img = get_MNIST_train_example()
-# get_pixel_value_pic(gray_img)
+# gray_img = get_MNIST_train_example()
+# save_image(gray_img * 255.0, 'train_images/mnist_example')
+gray_img = load_Image('train_images/mnist_example_3.jpg')
+gray_img = gray_img / 255
+get_pixel_value_pic(gray_img)
 gray_img_tensor = torch.from_numpy(gray_img).unsqueeze(0).unsqueeze(1)
 
 elementary_feature_map = get_elementary_feature_map(gray_img_tensor)

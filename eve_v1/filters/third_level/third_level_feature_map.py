@@ -283,7 +283,7 @@ def get_third_level_feature_map(second_level_feature_map, second_level_manually_
     binary_conv_layer_with_generalization_feature_tensor = torch.from_numpy(generalized_binary_conv_layer).unsqueeze(
         0).float()
 
-    get_total_picture(binary_conv_layer_with_generalization_feature_tensor)
+    get_total_picture(torch.from_numpy(binary_conv_layer).unsqueeze(0).float())
     # get_pixel_value_layer_with_icon(binary_conv_layer_with_generalization_feature_tensor, icons,
     #                                 26)
     # len(generalized_binary_conv_layer))

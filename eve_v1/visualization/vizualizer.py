@@ -124,6 +124,7 @@ def get_converted_picture(binary_conv_layer, manually_created_features, second_l
     next_level_conversion_data = convert_second_level_feature(next_level_conversion_data,
                                                               second_level_manually_created_features)
     pixels_coords = convert_first_level_feature(next_level_conversion_data)
+    # raw, column
     for pixels_coord in pixels_coords:
         img[pixels_coord[1], pixels_coord[0]] = 1
     plt.imshow(img, cmap='gray')

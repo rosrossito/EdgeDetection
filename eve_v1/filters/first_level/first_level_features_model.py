@@ -5,6 +5,7 @@ import torch.nn.functional as F
 
 THRESHOLD_FIRST_LAYER = 0.01
 
+
 class First_level_net(nn.Module):
 
     def __init__(self, weight, n_filters):
@@ -50,17 +51,22 @@ class First_level_net(nn.Module):
             feature_H_1)
 
         feature_vertical, feature_horizontal = self.filter_relevant_features(feature_vertical, feature_horizontal)
-        # feature_first_diag, feature_second_diag, feature_first_diag_down, feature_second_diag_down = \
-        #     self.filter_relevant_features_diag(feature_first_diag, feature_second_diag,
-        #                                        feature_first_diag_down, feature_second_diag_down,
-        #                                        feature_D_1, feature_D_2)
+        feature_first_diag, feature_second_diag, feature_first_diag_down, feature_second_diag_down = \
+            self.filter_relevant_features_diag(feature_first_diag, feature_second_diag,
+                                               feature_first_diag_down, feature_second_diag_down,
+                                               feature_D_1, feature_D_2)
 
         feature_opposite_first_diag, feature_opposite_second_diag, feature_opposite_vertical = self.get_vertical_diagonal_feature(
             feature_opposite_V_1)
         feature_opposite_first_diag_down, feature_opposite_second_diag_down, feature_opposite_horizontal = self.get_horizontal_diagonal_down_feature(
             feature_opposite_H_1)
 
-        feature_opposite_vertical, feature_opposite_horizontal = self.filter_relevant_features(feature_opposite_vertical, feature_opposite_horizontal)
+        feature_opposite_vertical, feature_opposite_horizontal = self.filter_relevant_features(
+            feature_opposite_vertical, feature_opposite_horizontal)
+        feature_opposite_first_diag, feature_opposite_second_diag, feature_opposite_first_diag_down, feature_opposite_second_diag_down = \
+            self.filter_relevant_features_diag(feature_opposite_first_diag, feature_opposite_second_diag,
+                                               feature_opposite_first_diag_down, feature_opposite_second_diag_down,
+                                               feature_D_1, feature_D_2)
 
         # build tensor back with new calculated np arrays:
         # add dimension to np arrays, convert to tensor and add gradient
@@ -76,11 +82,11 @@ class First_level_net(nn.Module):
         return new_features_tensor
 
     def get_vertical_diagonal_feature(self, feature_V_1):
-        feature_V_2 = np.delete(feature_V_1, 0, 0)
-        feature_V_2 = np.insert(feature_V_2, -1, 0, axis=0)
+        feature_V_2 = np.delete(feature_V_1, 0, axis=0)  # axis=0 - raw
+        feature_V_2 = np.insert(feature_V_2, -1, 0, axis=0)  # add to the end
         feature_vertical = feature_V_2 * feature_V_1
 
-        feature_D_1 = np.delete(feature_V_2, 0, 1)
+        feature_D_1 = np.delete(feature_V_2, 0, axis=1)
         feature_D_1 = np.insert(feature_D_1, -1, 0, axis=1)
         feature_first_diag = feature_D_1 * feature_V_1
 
@@ -111,16 +117,9 @@ class First_level_net(nn.Module):
         horizontal_multiplier = np.where(feature_vertical > THRESHOLD_FIRST_LAYER, 0, 1)
         return feature_vertical * vertical_multiplier, feature_horizontal * horizontal_multiplier
 
-    # TODO: add diagonal features filter
     def filter_relevant_features_diag(self, feature_first_diag, feature_second_diag,
                                       feature_first_diag_down, feature_second_diag_down,
                                       feature_D_1, feature_D_2):
-# ???
-        # # move feature to the right
-        # # delete first column
-        # feature_D_2 = np.delete(feature_D_2, -1, axis=1)
-        # feature_D_2 = np.insert(feature_D_2, 0, 0, axis=1)
-
         # delete first column
         shifted_feature_D_1 = np.delete(feature_D_1, 0, axis=1)
         shifted_feature_D_1 = np.insert(shifted_feature_D_1, -1, 0, axis=1)
@@ -134,14 +133,16 @@ class First_level_net(nn.Module):
         # delete first raw
         shifted_feature_D_1_down = np.delete(feature_D_1, 0, axis=0)
         shifted_feature_D_1_down = np.insert(shifted_feature_D_1_down, -1, 0, axis=0)
-        feature_first_diag_down_multiplier = np.where((feature_D_1 * shifted_feature_D_1_down) > THRESHOLD_FIRST_LAYER, 0, 1)
+        feature_first_diag_down_multiplier = np.where((feature_D_1 * shifted_feature_D_1_down) > THRESHOLD_FIRST_LAYER,
+                                                      0, 1)
 
         # delete first raw
         shifted_feature_D_2_down = np.delete(feature_D_2, 0, axis=0)
         shifted_feature_D_2_down = np.insert(shifted_feature_D_2_down, -1, 0, axis=0)
-        feature_second_diag_down_multiplier = np.where((feature_D_2 * shifted_feature_D_2_down) > THRESHOLD_FIRST_LAYER, 0, 1)
+        feature_second_diag_down_multiplier = np.where((feature_D_2 * shifted_feature_D_2_down) > THRESHOLD_FIRST_LAYER,
+                                                       0, 1)
 
         return feature_first_diag * feature_first_diag_multiplier, \
-               feature_second_diag * feature_second_diag_multiplier,\
-               feature_first_diag_down * feature_first_diag_down_multiplier,\
+               feature_second_diag * feature_second_diag_multiplier, \
+               feature_first_diag_down * feature_first_diag_down_multiplier, \
                feature_second_diag_down * feature_second_diag_down_multiplier

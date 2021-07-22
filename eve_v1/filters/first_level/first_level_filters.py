@@ -27,7 +27,18 @@ def create_first_level_filters():
         [-1, 0],
     ])
 
-    filters = np.array([filter_1, filter_2, filter_3, filter_4, filter_D1, filter_D2])
+    filter_D1_opposite = np.array([
+        [-1, 0],
+        [0, 1],
+    ])
+
+    filter_D2_opposite = np.array([
+        [0, -1],
+        [1, 0],
+    ])
+
+    filters = np.array([filter_1, filter_2, filter_3, filter_4, filter_D1, filter_D2, filter_D1_opposite,
+                        filter_D2_opposite])
 
     # viz_filter(filters)
 

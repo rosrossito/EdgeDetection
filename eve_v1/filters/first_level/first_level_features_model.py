@@ -43,8 +43,8 @@ class First_level_net(nn.Module):
         feature_opposite_V_1 = np.absolute(features[1])
         feature_H_1 = np.absolute(features[2])
         feature_opposite_H_1 = np.absolute(features[3])
-        feature_D_1 = np.absolute(features[4])
-        feature_D_2 = np.absolute(features[5])
+        feature_D_1 = np.absolute(features[4]) + np.absolute(features[6])
+        feature_D_2 = np.absolute(features[5]) + np.absolute(features[7])
 
         feature_first_diag, feature_second_diag, feature_vertical = self.get_vertical_diagonal_feature(feature_V_1)
         feature_first_diag_down, feature_second_diag_down, feature_horizontal = self.get_horizontal_diagonal_down_feature(

@@ -12,7 +12,7 @@ from eve_v1.visualization.vizualizer import get_pixel_value_pic
 # load pic
 # gray_img = get_MNIST_train_example()
 # save_image(gray_img * 255.0, 'train_images/mnist_example')
-gray_img = load_Image('train_images/mnist_example_7.jpg')
+gray_img = load_Image('train_images/mnist_example_8.jpg')
 gray_img = gray_img / 255
 # get_pixel_value_pic(gray_img)
 gray_img_tensor = torch.from_numpy(gray_img).unsqueeze(0).unsqueeze(1)

@@ -23,19 +23,20 @@ class First_level_net(nn.Module):
         self.pool = nn.AvgPool2d(2, 2)
 
     def forward(self, x):
+
+        # applies pooling layer
+        pooled_x = self.pool(x)
+        # pooled_x.detach().numpy()[0][0] - watching pooling layer
+
         # calculates the output of a convolutional layer
         # pre- and post-activation
-
-        conv_x = self.conv(x)
+        conv_x = self.conv(pooled_x)
 
         activated_x = F.relu(conv_x)
 
         mult_x = self.mult(activated_x)
 
-        # applies pooling layer
-        pooled_x = self.pool(mult_x)
-
-        return mult_x, pooled_x
+        return mult_x
 
     def mult(self, conv_x):
         features = conv_x.detach().numpy()[0]

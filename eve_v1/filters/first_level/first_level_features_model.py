@@ -28,6 +28,8 @@ class First_level_net(nn.Module):
         pooled_x = self.pool(x)
         # pooled_x.detach().numpy()[0][0] - watching pooling layer
 
+        # TODO investigate is it better to filter noise - discard less than 1% activation for example
+
         # calculates the output of a convolutional layer
         # pre- and post-activation
         conv_x = self.conv(pooled_x)

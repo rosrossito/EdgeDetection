@@ -130,11 +130,11 @@ def get_converted_picture(binary_conv_layer, manually_created_features, second_l
     plt.imshow(img, cmap='gray')
     plt.show()
 
-def get_converted_picture_first_layer(binary_conv_layer):
+def get_converted_picture_first_layer(binary_output_layer):
     input = []
     counter = 1
-    coords = get_coord(binary_conv_layer)
-    img = np.zeros((20, 20), dtype="float32")
+    coords = get_coord(binary_output_layer)
+    img = np.zeros((16, 16), dtype="float32")
     for coord_raw in coords:
         for coord in coord_raw:
             input.append([coord, counter])

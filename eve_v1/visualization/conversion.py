@@ -55,28 +55,28 @@ def get_coord(features):
 def get_pixel_offset(first_level_feature):
     # column, raw
     if first_level_feature == 1:
-        return [[0, 0], [1, 0]]
-    elif first_level_feature == 2:
-        return [[0, 0], [1, 1]]
-    elif first_level_feature == 3:
-        return [[0, 0], [0, 1]]
-    elif first_level_feature == 4:
-        return [[1, 0], [0, 1]]
-    elif first_level_feature == 5:
-        return [[0, 0], [1, 1]]
-    elif first_level_feature == 6:
-        return [[1, 0], [0, 1]]
-    elif first_level_feature == 7:
         return [[0, 1], [1, 1]]
-    elif first_level_feature == 8:
+    elif first_level_feature == 2:
         return [[1, 0], [2, 1]]
-    elif first_level_feature == 9:
+    elif first_level_feature == 3:
         return [[1, 0], [1, 1]]
-    elif first_level_feature == 10:
+    elif first_level_feature == 4:
         return [[2, 0], [1, 1]]
-    elif first_level_feature == 11:
+    elif first_level_feature == 5:
         return [[0, 1], [1, 2]]
-    elif first_level_feature == 12:
+    elif first_level_feature == 6:
         return [[1, 1], [0, 2]]
+    elif first_level_feature == 7:
+        return [[0, 0], [1, 0]]
+    elif first_level_feature == 8:
+        return [[0, 0], [1, 1]]
+    elif first_level_feature == 9:
+        return [[0, 0], [0, 1]]
+    elif first_level_feature == 10:
+        return [[1, 0], [0, 1]]
+    elif first_level_feature == 11:
+        return [[0, 0], [1, 1]]
+    elif first_level_feature == 12:
+        return [[1, 0], [0, 1]]
     else:
         raise ValueError('Feature are not correctly constructed.')

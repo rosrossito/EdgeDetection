@@ -50,7 +50,7 @@ def get_pixel_value_pic(img):
 def draw_kernels(fig, img, n_filters=1, i=0):
     ax = fig.add_subplot(2, n_filters, i + 1)
     ax.imshow(img, cmap='gray')
-    ax.set_title('Feature number: %s' % str((img > 0).sum()))
+    ax.set_title('Feature number: %s' % str(int(np.sum(img) * 2)))
 
     width, height = img.shape
     thresh = img.max() / 2.5
@@ -87,7 +87,7 @@ def get_pixel_value_layer_with_icon(layer, icons, n_filters=4):
         for i in range(k * 4, end):
             img = layer[0, i].data.numpy()
             draw_kernels_with_icon(fig, img, icons[i], 4, i - k * 4)
-            total_feature_number = total_feature_number + (img > 0).sum()
+            total_feature_number = total_feature_number + int(np.sum(img) * 2)
     plt.show(block=True)
     print("Total feature number in layer: " + str(total_feature_number))
 
@@ -95,7 +95,7 @@ def get_pixel_value_layer_with_icon(layer, icons, n_filters=4):
 def draw_kernels_with_icon(fig, img, icon, n_filters=1, i=0):
     ax = fig.add_subplot(2, n_filters, i + 1)
     ax.imshow(img, cmap='gray')
-    ax.set_title('Feature number: %s' % str((img > 0).sum()))
+    ax.set_title('Feature number: %s' % str(int(np.sum(img) * 2)))
 
     width, height = img.shape
     thresh = img.max() / 2.5

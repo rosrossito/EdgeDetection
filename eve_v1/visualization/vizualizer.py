@@ -3,7 +3,7 @@ from math import ceil
 import matplotlib.pyplot as plt
 import numpy as np
 
-from eve_v1.visualization.conversion import get_coord, convert_third_level_feature, convert_second_level_feature, \
+from eve_v1.visualization.conversion import get_coord, convert_input_level_feature, convert_second_level_feature, \
     convert_first_level_feature
 
 
@@ -119,27 +119,33 @@ def get_total_picture(layer):
 
 def get_converted_picture(binary_conv_layer, manually_created_features, second_level_manually_created_features):
     coords = get_coord(binary_conv_layer)
-    img = np.zeros((17, 17), dtype="float32")
-    next_level_conversion_data = convert_third_level_feature(coords, manually_created_features)
+    next_level_conversion_data = convert_input_level_feature(coords, manually_created_features)
     next_level_conversion_data = convert_second_level_feature(next_level_conversion_data,
                                                               second_level_manually_created_features)
     pixels_coords = convert_first_level_feature(next_level_conversion_data)
-    # raw, column
-    for pixels_coord in pixels_coords:
-        img[pixels_coord[1], pixels_coord[0]] = 1
-    plt.imshow(img, cmap='gray')
-    plt.show()
+    show_built_image(pixels_coords)
+
+def get_converted_picture_second_layer(binary_output_layer, second_level_manually_created_features):
+
+    coords = get_coord(binary_output_layer)
+    next_level_conversion_data = convert_input_level_feature(coords, second_level_manually_created_features)
+    pixels_coords = convert_first_level_feature(next_level_conversion_data)
+    show_built_image(pixels_coords)
 
 def get_converted_picture_first_layer(binary_output_layer):
     input = []
     counter = 1
     coords = get_coord(binary_output_layer)
-    img = np.zeros((16, 16), dtype="float32")
     for coord_raw in coords:
         for coord in coord_raw:
             input.append([coord, counter])
         counter = counter + 1
     pixels_coords = convert_first_level_feature(input)
+    show_built_image(pixels_coords)
+
+def show_built_image(pixels_coords):
+    img = np.zeros((17, 17), dtype="float32")
+    # raw, column
     for pixels_coord in pixels_coords:
         img[pixels_coord[1], pixels_coord[0]] = 1
     plt.imshow(img, cmap='gray')

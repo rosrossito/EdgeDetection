@@ -6,7 +6,8 @@ from eve_v1.filters.conversion.feature_map_conversion import get_binary_feature_
 from eve_v1.filters.generalization.generalization_service import generalize
 from eve_v1.filters.second_level.second_level_feature_model import Second_level_net
 from eve_v1.filters.second_level.second_level_filters import create_second_level_filters
-from eve_v1.visualization.vizualizer import get_pixel_value_layer_with_icon, get_total_picture
+from eve_v1.visualization.vizualizer import get_pixel_value_layer_with_icon, get_total_picture, viz_layer, \
+    get_converted_picture_second_layer
 
 import cv2
 
@@ -125,7 +126,8 @@ def get_second_level_feature_map(features_arr):
         0).float()
 
     # viz_layer(binary_conv_layer)
+    get_pixel_value_layer_with_icon(binary_conv_layer_with_generalization_feature_tensor, icons, len(generalized_binary_conv_layer))
     get_total_picture(torch.from_numpy(binary_conv_layer).unsqueeze(0).float())
-    # get_pixel_value_layer_with_icon(binary_conv_layer_with_generalization_feature_tensor, icons, len(generalized_binary_conv_layer))
+    get_converted_picture_second_layer(binary_conv_layer, manually_created_features)
     return binary_conv_layer_with_generalization_feature_tensor, torch.from_numpy(binary_conv_layer).unsqueeze(
         0).float(), manually_created_features

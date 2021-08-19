@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def convert_third_level_feature(coords, feature_offsets):
+def convert_input_level_feature(coords, feature_offsets):
     next_level_conversion_data = []
     for feature_coords, feature_offset_raw in zip(coords, feature_offsets):
         for coord in feature_coords:
@@ -36,7 +36,7 @@ def convert_first_level_feature(previous_coords_feature):
             next_level_conversion_data.append([x, y])
     return next_level_conversion_data
 
-
+# get coordinates array for every feature
 def get_coord(features):
     # raw, column
     coords = []

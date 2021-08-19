@@ -42,9 +42,8 @@ def get_elementary_feature_map(gray_img_tensor):
 
     binary_output_layer = get_binary_feature_map(output_layer.detach().numpy()[0], THRESHOLD_FIRST_LAYER)
     # viz_layer(torch.from_numpy(binary_output_layer).unsqueeze(0).float())
-    get_pixel_value_layer_with_icon(torch.from_numpy(binary_output_layer).unsqueeze(0).float(), icons, len(output_layer.detach().numpy()[0]))
-    get_total_picture(torch.from_numpy(binary_output_layer).unsqueeze(0).float())
-
+    # get_pixel_value_layer_with_icon(torch.from_numpy(binary_output_layer).unsqueeze(0).float(), icons, len(output_layer.detach().numpy()[0]))
+    # get_total_picture(torch.from_numpy(binary_output_layer).unsqueeze(0).float())
     get_converted_picture_first_layer(binary_output_layer)
 
     return binary_output_layer

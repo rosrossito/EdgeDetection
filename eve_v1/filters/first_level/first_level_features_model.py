@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-THRESHOLD_FIRST_LAYER = 0.01
+THRESHOLD_FIRST_LAYER = 0.02
 
 
 class First_level_net(nn.Module):
@@ -27,8 +27,6 @@ class First_level_net(nn.Module):
         # applies pooling layer
         pooled_x = self.pool(x)
         # pooled_x.detach().numpy()[0][0] - watching pooling layer
-
-        # TODO investigate is it better to filter noise - discard less than 1% activation for example
 
         # calculates the output of a convolutional layer
         # pre- and post-activation

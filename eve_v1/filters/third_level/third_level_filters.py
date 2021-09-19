@@ -35,11 +35,11 @@ def get_manually_created_feature(kernel_depth):
         # parameters: kernel number, column, raw
         manually_created_feature.append([[feature + 1, 1, 1], [feature + 1, 2, 1], [feature + 1, 3, 1]])
         manually_created_feature.append(
-            [[reversed_feature + 1, 1, 1], [feature + 11, 2, 1], [reversed_feature + 7, 3, 1]])
+            [[feature + 1, 1, 1], [reversed_feature + 11, 2, 1], [feature + 7, 3, 1]])
         manually_created_feature.append([[feature + 2, 1, 1], [feature + 2, 2, 2], [feature + 2, 3, 3]])
         manually_created_feature.append([[feature + 3, 1, 1], [feature + 8, 1, 2], [reversed_feature + 12, 1, 3]])
         manually_created_feature.append([[feature + 3, 1, 1], [feature + 3, 1, 2], [feature + 3, 1, 3]])
-        manually_created_feature.append([[reversed_feature + 13, 1, 1], [feature + 9, 1, 2], [feature + 3, 1, 3]])
+        manually_created_feature.append([[feature + 3, 1, 2], [reversed_feature + 13, 1, 2], [feature + 9, 1, 3]])
         manually_created_feature.append([[feature + 4, 3, 1], [feature + 4, 2, 2], [feature + 4, 1, 3]])
         manually_created_feature.append(
             [[reversed_feature + 14, 1, 1], [feature + 10, 2, 1], [reversed_feature + 1, 3, 1]])

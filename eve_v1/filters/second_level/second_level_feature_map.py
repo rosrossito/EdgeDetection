@@ -3,7 +3,8 @@ import numpy as np
 import torch.nn.functional as F
 
 from eve_v1.filters.conversion.feature_map_conversion import get_binary_feature_map
-from eve_v1.filters.generalization.generalization_service import generalize
+from eve_v1.filters.generalization.generalization_service import generalize_angles, generalize_direction, \
+    concat_features
 from eve_v1.filters.second_level.second_level_feature_model import Second_level_net
 from eve_v1.filters.second_level.second_level_filters import create_second_level_filters
 from eve_v1.visualization.vizualizer import get_pixel_value_layer_with_icon, get_total_picture, viz_layer, \
@@ -16,6 +17,15 @@ THRESHOLD_SECOND_LAYER = 1
 
 def get_second_level_feature_map(features_arr):
     icons = [cv2.imread("././resources/generalization1.jpg"),
+             cv2.imread("././resources/generalization1.jpg"),
+             cv2.imread("././resources/generalization1.jpg"),
+             cv2.imread("././resources/generalization1.jpg"),
+             cv2.imread("././resources/generalization1.jpg"),
+             cv2.imread("././resources/generalization1.jpg"),
+             cv2.imread("././resources/generalization1.jpg"),
+             cv2.imread("././resources/generalization1.jpg"),
+
+             cv2.imread("././resources/generalization1.jpg"),
              cv2.imread("././resources/generalization1.jpg"),
              cv2.imread("././resources/generalization1.jpg"),
              cv2.imread("././resources/generalization1.jpg"),
@@ -121,7 +131,10 @@ def get_second_level_feature_map(features_arr):
 
     # To generalize turning of features we need to sum up same features with different angles
     # Second parameter is quantity of filters for lines, third parameter is quantity of different rotation for every feature
-    generalized_binary_conv_layer = generalize(binary_conv_layer, line_filters_number, angle_filters_number)
+
+    generalized_direction_feature = generalize_direction(binary_conv_layer, line_filters_number, angle_filters_number)
+    generalized_edge_feature = generalize_angles(binary_conv_layer, line_filters_number, angle_filters_number)
+    generalized_binary_conv_layer = concat_features(generalized_direction_feature, generalized_edge_feature, binary_conv_layer)
     binary_conv_layer_with_generalization_feature_tensor = torch.from_numpy(generalized_binary_conv_layer).unsqueeze(
         0).float()
 

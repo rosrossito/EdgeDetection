@@ -3,8 +3,8 @@ import numpy as np
 import torch.nn.functional as F
 
 from eve_v1.filters.conversion.feature_map_conversion import get_binary_feature_map
-from eve_v1.filters.generalization.generalization_service import generalize_angles, generalize_direction, \
-    concat_features
+from eve_v1.filters.generalization.generalization_service import generalize_angles, generalize_orientation, \
+    concat_features, generalize_space
 from eve_v1.filters.second_level.second_level_feature_model import Second_level_net
 from eve_v1.filters.second_level.second_level_filters import create_second_level_filters
 from eve_v1.visualization.vizualizer import get_pixel_value_layer_with_icon, get_total_picture, viz_layer, \
@@ -16,23 +16,41 @@ THRESHOLD_SECOND_LAYER = 1
 
 
 def get_second_level_feature_map(features_arr):
-    icons = [cv2.imread("././resources/generalization1.jpg"),
-             cv2.imread("././resources/generalization1.jpg"),
-             cv2.imread("././resources/generalization1.jpg"),
-             cv2.imread("././resources/generalization1.jpg"),
-             cv2.imread("././resources/generalization1.jpg"),
-             cv2.imread("././resources/generalization1.jpg"),
-             cv2.imread("././resources/generalization1.jpg"),
-             cv2.imread("././resources/generalization1.jpg"),
+    icons = [cv2.imread("././resources/generalization.jpg"),
+             cv2.imread("././resources/generalization.jpg"),
+             cv2.imread("././resources/generalization.jpg"),
+             cv2.imread("././resources/generalization.jpg"),
+             cv2.imread("././resources/generalization.jpg"),
+             cv2.imread("././resources/generalization.jpg"),
+             cv2.imread("././resources/generalization.jpg"),
+             cv2.imread("././resources/generalization.jpg"),
 
-             cv2.imread("././resources/generalization1.jpg"),
-             cv2.imread("././resources/generalization1.jpg"),
-             cv2.imread("././resources/generalization1.jpg"),
-             cv2.imread("././resources/generalization1.jpg"),
-             cv2.imread("././resources/generalization1.jpg"),
-             cv2.imread("././resources/generalization1.jpg"),
-             cv2.imread("././resources/generalization1.jpg"),
-             cv2.imread("././resources/generalization1.jpg"),
+             cv2.imread("././resources/generalization.jpg"),
+             cv2.imread("././resources/generalization.jpg"),
+             cv2.imread("././resources/generalization.jpg"),
+             cv2.imread("././resources/generalization.jpg"),
+             cv2.imread("././resources/generalization.jpg"),
+             cv2.imread("././resources/generalization.jpg"),
+             cv2.imread("././resources/generalization.jpg"),
+             cv2.imread("././resources/generalization.jpg"),
+
+             cv2.imread("././resources/generalization.jpg"),
+             cv2.imread("././resources/generalization.jpg"),
+             cv2.imread("././resources/generalization.jpg"),
+             cv2.imread("././resources/generalization.jpg"),
+             cv2.imread("././resources/generalization.jpg"),
+             cv2.imread("././resources/generalization.jpg"),
+             cv2.imread("././resources/generalization.jpg"),
+             cv2.imread("././resources/generalization.jpg"),
+
+             cv2.imread("././resources/generalization.jpg"),
+             cv2.imread("././resources/generalization.jpg"),
+             cv2.imread("././resources/generalization.jpg"),
+             cv2.imread("././resources/generalization.jpg"),
+             cv2.imread("././resources/generalization.jpg"),
+             cv2.imread("././resources/generalization.jpg"),
+             cv2.imread("././resources/generalization.jpg"),
+             cv2.imread("././resources/generalization.jpg"),
 
              cv2.imread("././resources/180_h.png"),
              cv2.imread("././resources/180_1d.png"),
@@ -132,14 +150,20 @@ def get_second_level_feature_map(features_arr):
     # To generalize turning of features we need to sum up same features with different angles
     # Second parameter is quantity of filters for lines, third parameter is quantity of different rotation for every feature
 
-    generalized_direction_feature = generalize_direction(binary_conv_layer, line_filters_number, angle_filters_number)
-    generalized_edge_feature = generalize_angles(binary_conv_layer, line_filters_number, angle_filters_number)
-    generalized_binary_conv_layer = concat_features(generalized_direction_feature, generalized_edge_feature, binary_conv_layer)
+    generalized_orientation_feature = generalize_orientation(binary_conv_layer, line_filters_number, angle_filters_number)
+    generalized_kind_feature = generalize_angles(binary_conv_layer, line_filters_number, angle_filters_number)
+    generalized_space_orientation_feature = generalize_space(generalized_orientation_feature)
+    generalized_space_kind_feature = generalize_space(generalized_kind_feature)
+    generalized_binary_conv_layer = concat_features(generalized_orientation_feature,
+                                                    generalized_kind_feature,
+                                                    generalized_space_orientation_feature,
+                                                    generalized_space_kind_feature,
+                                                    binary_conv_layer)
     binary_conv_layer_with_generalization_feature_tensor = torch.from_numpy(generalized_binary_conv_layer).unsqueeze(
         0).float()
 
     # viz_layer(binary_conv_layer)
-    get_pixel_value_layer_with_icon(binary_conv_layer_with_generalization_feature_tensor, icons, len(generalized_binary_conv_layer))
+    # get_pixel_value_layer_with_icon(binary_conv_layer_with_generalization_feature_tensor, icons, len(generalized_binary_conv_layer))
     get_total_picture(torch.from_numpy(binary_conv_layer).unsqueeze(0).float())
     get_converted_picture_second_layer(binary_conv_layer, manually_created_features)
     return binary_conv_layer_with_generalization_feature_tensor, torch.from_numpy(binary_conv_layer).unsqueeze(

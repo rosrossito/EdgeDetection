@@ -4,8 +4,8 @@ import torch.nn.functional as F
 
 from eve_v1.filters.conversion.feature_map_conversion import get_thresholds, \
     get_binary_feature_map_with_different_thresholds
-from eve_v1.filters.generalization.generalization_service import generalize_angles, generalize_direction, \
-    concat_features
+from eve_v1.filters.generalization.generalization_service import generalize_angles, generalize_orientation, \
+    concat_features, generalize_space
 from eve_v1.filters.third_level.third_level_feature_model import Third_level_net
 from eve_v1.filters.third_level.third_level_filters import create_third_level_filters
 from eve_v1.visualization.vizualizer import get_total_picture, get_converted_picture
@@ -13,37 +13,37 @@ from eve_v1.visualization.vizualizer import get_total_picture, get_converted_pic
 
 def get_third_level_feature_map(second_level_feature_map, second_level_manually_created_features):
     icons = [
-        cv2.imread("././resources/generalization1.jpg"),
-        cv2.imread("././resources/generalization1.jpg"),
-        cv2.imread("././resources/generalization1.jpg"),
-        cv2.imread("././resources/generalization1.jpg"),
-        cv2.imread("././resources/generalization1.jpg"),
-        cv2.imread("././resources/generalization1.jpg"),
-        cv2.imread("././resources/generalization1.jpg"),
-        cv2.imread("././resources/generalization1.jpg"),
-        cv2.imread("././resources/generalization1.jpg"),
-        cv2.imread("././resources/generalization1.jpg"),
-        cv2.imread("././resources/generalization1.jpg"),
-        cv2.imread("././resources/generalization1.jpg"),
-        cv2.imread("././resources/generalization1.jpg"),
-        cv2.imread("././resources/generalization1.jpg"),
-        cv2.imread("././resources/generalization1.jpg"),
-        cv2.imread("././resources/generalization1.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
 
-        cv2.imread("././resources/generalization1.jpg"),
-        cv2.imread("././resources/generalization1.jpg"),
-        cv2.imread("././resources/generalization1.jpg"),
-        cv2.imread("././resources/generalization1.jpg"),
-        cv2.imread("././resources/generalization1.jpg"),
-        cv2.imread("././resources/generalization1.jpg"),
-        cv2.imread("././resources/generalization1.jpg"),
-        cv2.imread("././resources/generalization1.jpg"),
-        cv2.imread("././resources/generalization1.jpg"),
-        cv2.imread("././resources/generalization1.jpg"),
-        cv2.imread("././resources/generalization1.jpg"),
-        cv2.imread("././resources/generalization1.jpg"),
-        cv2.imread("././resources/generalization1.jpg"),
-        cv2.imread("././resources/generalization1.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
+        cv2.imread("././resources/generalization.jpg"),
 
         cv2.imread("././resources/180_h.png"),
         cv2.imread("././resources/180_h.png"),
@@ -300,9 +300,14 @@ def get_third_level_feature_map(second_level_feature_map, second_level_manually_
     # To generalize turning of features we need to sum up same features with different angles
     # Second parameter is quantity of filters for lines, third parameter is quantity of different rotation for every feature
 
-    generalized_direction_feature = generalize_direction(binary_conv_layer, line_filters_number, angle_filters_number)
-    generalized_edge_feature = generalize_angles(binary_conv_layer, line_filters_number, angle_filters_number)
-    generalized_binary_conv_layer = concat_features(generalized_direction_feature, generalized_edge_feature,
+    generalized_orientation_feature = generalize_orientation(binary_conv_layer, line_filters_number, angle_filters_number)
+    generalized_kind_feature = generalize_angles(binary_conv_layer, line_filters_number, angle_filters_number)
+    generalized_space_orientation_feature = generalize_space(generalized_orientation_feature)
+    generalized_space_kind_feature = generalize_space(generalized_kind_feature)
+    generalized_binary_conv_layer = concat_features(generalized_orientation_feature,
+                                                    generalized_kind_feature,
+                                                    generalized_space_orientation_feature,
+                                                    generalized_space_kind_feature,
                                                     binary_conv_layer)
     binary_conv_layer_with_generalization_feature_tensor = torch.from_numpy(generalized_binary_conv_layer).unsqueeze(
         0).float()

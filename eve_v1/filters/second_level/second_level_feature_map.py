@@ -129,7 +129,7 @@ def get_second_level_feature_map(features_arr):
     model = Second_level_net(weight, len(filters), len(features_arr))
 
     # print out the layer in the network
-    print(model)
+    # print(model)
 
     # Prepare correct input - to have real convolution we need both elements are activated. Unfortunately torch
     # does not allow to do that. So, we need to simplify model - to make all element binary
@@ -159,12 +159,9 @@ def get_second_level_feature_map(features_arr):
                                                     generalized_space_orientation_feature,
                                                     generalized_space_kind_feature,
                                                     binary_conv_layer)
-    binary_conv_layer_with_generalization_feature_tensor = torch.from_numpy(generalized_binary_conv_layer).unsqueeze(
-        0).float()
 
     # viz_layer(binary_conv_layer)
     # get_pixel_value_layer_with_icon(binary_conv_layer_with_generalization_feature_tensor, icons, len(generalized_binary_conv_layer))
-    get_total_picture(torch.from_numpy(binary_conv_layer).unsqueeze(0).float())
-    get_converted_picture_second_layer(binary_conv_layer, manually_created_features)
-    return binary_conv_layer_with_generalization_feature_tensor, torch.from_numpy(binary_conv_layer).unsqueeze(
-        0).float(), manually_created_features
+    # get_total_picture(torch.from_numpy(binary_conv_layer).unsqueeze(0).float())
+    # get_converted_picture_second_layer(binary_conv_layer, manually_created_features)
+    return generalized_binary_conv_layer, binary_conv_layer, manually_created_features

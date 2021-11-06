@@ -11,7 +11,7 @@ from eve_v1.filters.third_level.third_level_filters import create_third_level_fi
 from eve_v1.visualization.vizualizer import get_total_picture, get_converted_picture
 
 
-def get_third_level_feature_map(second_level_feature_map, second_level_manually_created_features):
+def get_third_level_feature_map(features_arr, second_level_manually_created_features):
     icons = [
         cv2.imread("././resources/generalization.jpg"),
         cv2.imread("././resources/generalization.jpg"),
@@ -268,8 +268,6 @@ def get_third_level_feature_map(second_level_feature_map, second_level_manually_
         cv2.imread("././resources/45.png")
     ]
 
-    features_arr = second_level_feature_map.detach().numpy()[0]
-
     line_filters_number, angle_filters_number, filters, manually_created_features = create_third_level_filters(
         len(features_arr))
 
@@ -278,7 +276,7 @@ def get_third_level_feature_map(second_level_feature_map, second_level_manually_
     model = Third_level_net(weight, len(filters), len(features_arr))
 
     # print out the layer in the network
-    print(model)
+    # print(model)
 
     # Prepare correct input - to have real convolution we need both elements are activated. Unfortunately torch
     # does not allow to do that. So, we need to simplify model - to make all element binary
@@ -309,13 +307,10 @@ def get_third_level_feature_map(second_level_feature_map, second_level_manually_
                                                     generalized_space_orientation_feature,
                                                     generalized_space_kind_feature,
                                                     binary_conv_layer)
-    binary_conv_layer_with_generalization_feature_tensor = torch.from_numpy(generalized_binary_conv_layer).unsqueeze(
-        0).float()
 
-    get_total_picture(torch.from_numpy(binary_conv_layer).unsqueeze(0).float())
+    # get_total_picture(torch.from_numpy(binary_conv_layer).unsqueeze(0).float())
     # get_pixel_value_layer_with_icon(binary_conv_layer_with_generalization_feature_tensor, icons,
     #                                 26)
     # len(generalized_binary_conv_layer))
-    get_converted_picture(binary_conv_layer, manually_created_features, second_level_manually_created_features)
-    return binary_conv_layer_with_generalization_feature_tensor, torch.from_numpy(binary_conv_layer).unsqueeze(
-        0).float()
+    # get_converted_picture(binary_conv_layer, manually_created_features, second_level_manually_created_features)
+    return generalized_binary_conv_layer, binary_conv_layer

@@ -122,7 +122,7 @@ def get_second_level_feature_map(features_arr):
              ]
 
     line_filters_number, angle_filters_number, filters, manually_created_features = create_second_level_filters(
-        len(features_arr))
+        len(features_arr[1]))
 
     # instantiate the model and set the weights
     weight = torch.from_numpy(filters).type(torch.FloatTensor)
@@ -142,10 +142,10 @@ def get_second_level_feature_map(features_arr):
     # 3. For other layers: all elements of input array to other layers are equal to 0 if they less than 1
     # and they are equal to 0.5 otherwise (get_binary_feature_map).
 
-    tensor = F.pad(torch.from_numpy(features_arr).unsqueeze(0).float(), (0, 1, 0, 1))
+    tensor = F.pad(torch.from_numpy(features_arr).float(), (0, 1, 0, 1))
     conv_layer = model.forward(tensor)
 
-    binary_conv_layer = get_binary_feature_map(conv_layer.detach().numpy()[0], THRESHOLD_SECOND_LAYER)
+    binary_conv_layer = get_binary_feature_map(conv_layer.detach().numpy(), THRESHOLD_SECOND_LAYER)
 
     # To generalize turning of features we need to sum up same features with different angles
     # Second parameter is quantity of filters for lines, third parameter is quantity of different rotation for every feature

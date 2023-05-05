@@ -122,22 +122,22 @@ def get_third_level_feature_map(features_arr, second_level_manually_created_feat
         cv2.imread("././resources/90.png"),
         cv2.imread("././resources/90.png"),
 
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
 
         cv2.imread("././resources/45.png"),
         cv2.imread("././resources/45.png"),
@@ -233,22 +233,22 @@ def get_third_level_feature_map(features_arr, second_level_manually_created_feat
         cv2.imread("././resources/90.png"),
         cv2.imread("././resources/90.png"),
 
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
-        cv2.imread("././resources/57,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
+        cv2.imread("././resources/67,5.png"),
 
         cv2.imread("././resources/45.png"),
         cv2.imread("././resources/45.png"),
@@ -269,7 +269,7 @@ def get_third_level_feature_map(features_arr, second_level_manually_created_feat
     ]
 
     line_filters_number, angle_filters_number, filters, manually_created_features = create_third_level_filters(
-        len(features_arr))
+        len(features_arr[1]))
 
     # instantiate the model and set the weights
     weight = torch.from_numpy(filters).type(torch.FloatTensor)
@@ -289,10 +289,10 @@ def get_third_level_feature_map(features_arr, second_level_manually_created_feat
     # 3. For other layers: all elements of input array to other layers are equal to 0 if they less than 1
     # and they are equal to 0.5 otherwise (get_binary_feature_map).
 
-    tensor = F.pad(torch.from_numpy(features_arr).unsqueeze(0).float(), (0, 2, 0, 2))
+    tensor = F.pad(torch.from_numpy(features_arr).float(), (0, 2, 0, 2))
     conv_layer = model.forward(tensor)
 
-    binary_conv_layer = get_binary_feature_map_with_different_thresholds(conv_layer.detach().numpy()[0],
+    binary_conv_layer = get_binary_feature_map_with_different_thresholds(conv_layer.detach().numpy(),
                                                                          get_thresholds(filters))
 
     # To generalize turning of features we need to sum up same features with different angles
@@ -313,4 +313,4 @@ def get_third_level_feature_map(features_arr, second_level_manually_created_feat
     #                                 26)
     # len(generalized_binary_conv_layer))
     # get_converted_picture(binary_conv_layer, manually_created_features, second_level_manually_created_features)
-    return generalized_binary_conv_layer, binary_conv_layer
+    return generalized_binary_conv_layer, binary_conv_layer, manually_created_features

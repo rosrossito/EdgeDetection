@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
 import itertools
 
-# from keras.utils.np_utils import to_categorical # convert to one-hot-encoding
+from keras.utils.np_utils import to_categorical # convert to one-hot-encoding
 # from keras.models import Sequential
 # from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPool2D
 # from keras.optimizers import RMSprop
@@ -45,7 +45,7 @@ def load_mnist_dataset():
     test = test.values.reshape(-1, 28, 28, 1)
 
     # Encode labels to one hot vectors (ex : 2 -> [0,0,1,0,0,0,0,0,0,0])
-    # Y_train = to_categorical(Y_train, num_classes=10)
+    Y_train = to_categorical(Y_train, num_classes=10)
 
     # Set the random seed
     random_seed = 2

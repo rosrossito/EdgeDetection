@@ -1,23 +1,19 @@
-import matplotlib.pyplot as plt
 import numpy as np
-
-from eve_v1.visualization.vizualizer import viz_filter
 
 
 def create_first_level_filters():
-
     # Defining the Filters
-    filter_1 =  np.array([
+    filter_1 = np.array([
         [-1, 1],
         [0, 0],
     ])
 
-    filter_2 =  np.array([
+    filter_2 = np.array([
         [1, -1],
         [0, 0],
     ])
 
-    filter_3 =  np.array([
+    filter_3 = np.array([
         [-1, 0],
         [1, 0],
     ])

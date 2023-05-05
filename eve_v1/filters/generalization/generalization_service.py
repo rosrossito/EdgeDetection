@@ -3,10 +3,11 @@ import numpy as np
 
 # orientation generalization - rotation
 def generalize_orientation(layer, line_filters_number, angle_filters_number):
-    reversed_features = int(len(layer) / 2)
-    height, width = layer[0].shape
+    reversed_features = int(len(layer[0]) / 2)
+    depth = len(layer)
+    height, width = layer[0][0].shape
     generalized_feature = []
-    generalized_feature_direction = np.zeros((height, width))
+    generalized_feature_direction = np.zeros((depth, height, width))
 
     # orientation generalization applied to edges
     # edges are more important for defining image shape and its borders,
@@ -17,22 +18,23 @@ def generalize_orientation(layer, line_filters_number, angle_filters_number):
     feature_numbers = reversed_features - line_filters_number
     for i in range(line_filters_number, line_filters_number + angle_filters_number):
         for k in range(i, feature_numbers, angle_filters_number):
-            generalized_feature_direction = np.add(generalized_feature_direction, layer[k])
+            generalized_feature_direction = np.add(generalized_feature_direction, layer[:, k])
         generalized_feature.append(generalized_feature_direction)
         generalized_feature_direction = np.zeros((height, width))
-    return np.array(generalized_feature)
+    return np.swapaxes(np.array(generalized_feature), 0, 1)
 
 
 # angles generalization - rotation
 def generalize_angles(layer, line_filters_number, angle_filters_number):
-    reversed_features = int(len(layer) / 2)
-
-    height, width = layer[0].shape
+    reversed_features = int(len(layer[0]) / 2)
+    depth = len(layer)
+    height, width = layer[0][0].shape
     generalized_feature = []
-    generalized_feature_lines = np.zeros((height, width))
-    generalized_feature_angles = np.zeros((height, width))
+    generalized_feature_lines = np.zeros((depth, height, width))
+    generalized_feature_angles = np.zeros((depth, height, width))
 
-    for feature in layer[0:line_filters_number]:
+    swapped_layer = np.swapaxes(layer, 0, 1)
+    for feature in swapped_layer[0:line_filters_number]:
         generalized_feature_lines = np.add(generalized_feature_lines, feature)
 
     generalized_feature.append(generalized_feature_lines)
@@ -40,29 +42,29 @@ def generalize_angles(layer, line_filters_number, angle_filters_number):
     for i in range(line_filters_number, reversed_features):
         if ((i - line_filters_number) != 0) & ((i - line_filters_number) % angle_filters_number == 0):
             generalized_feature.append(generalized_feature_angles)
-            generalized_feature_angles = layer[i]
+            generalized_feature_angles = layer[:, i]
         else:
-            generalized_feature_angles = np.add(generalized_feature_angles, layer[i])
+            generalized_feature_angles = np.add(generalized_feature_angles, layer[:, i])
     generalized_feature.append(generalized_feature_angles)
 
-    generalized_feature_lines = np.zeros((height, width))
-    generalized_feature_angles = np.zeros((height, width))
+    generalized_feature_lines = np.zeros((depth, height, width))
+    generalized_feature_angles = np.zeros((depth, height, width))
 
-    for feature in layer[reversed_features:reversed_features + line_filters_number]:
+    for feature in swapped_layer[reversed_features:reversed_features + line_filters_number]:
         generalized_feature_lines = np.add(generalized_feature_lines, feature)
 
     generalized_feature.append(generalized_feature_lines)
 
     start_point = reversed_features + line_filters_number
-    for i in range(start_point, len(layer)):
+    for i in range(start_point, len(layer[0])):
         if ((i - start_point) != 0) & ((i - start_point) % angle_filters_number == 0):
             generalized_feature.append(generalized_feature_angles)
-            generalized_feature_angles = layer[i]
+            generalized_feature_angles = layer[:, i]
         else:
-            generalized_feature_angles = np.add(generalized_feature_angles, layer[i])
+            generalized_feature_angles = np.add(generalized_feature_angles, layer[:, i])
     generalized_feature.append(generalized_feature_angles)
 
-    return np.array(generalized_feature)
+    return np.swapaxes(np.array(generalized_feature), 0, 1)
 
 
 def generalize_space(layer):
@@ -88,31 +90,33 @@ def generalize_space(layer):
     # direction and kind (e.a. angles degrees, edge actually has 180 degrees))
     # To preserve kernel size we can add just zero elements
 
-    height, width = layer[0].shape
+    depth = len(layer)
+    height, width = layer[0][0].shape
     generalized_feature = []
+    swapped_layer = np.swapaxes(layer, 0, 1)
 
-    for feature in layer:
-        generalized_feature_space = np.zeros((height, width))
+    for feature in swapped_layer:
+        generalized_feature_space = np.zeros((depth, height, width))
 
-        columns = np.sum(feature, axis=0)
-        for period in range(1, columns.size):
-            value = 0
-            for i in range(period, columns.size):
-                value = value + columns[i] + columns[i - period]
-            generalized_feature_space[period-1][0]=value
+        columns = np.sum(feature, axis=1)
+        for period in range(1, columns[0].size):
+            value = np.zeros((depth))
+            for i in range(period, columns[0].size):
+                value = value + columns[:, i] + columns[:, i - period]
+            np.swapaxes(generalized_feature_space, 0, 2)[period-1][0] = value
 
 
         # Vertical generalization (the same strategy but using not column but raws)
-        raws = np.sum(feature, axis=1)
-        for period in range(1, raws.size):
-            value = 0
-            for i in range(period, raws.size):
-                value = value + raws[i] + raws[i - period]
-            generalized_feature_space[period-1][1]=value
+        raws = np.sum(feature, axis=2)
+        for period in range(1, raws[0].size):
+            value = np.zeros((depth))
+            for i in range(period, raws[0].size):
+                value = value + raws[:, i] + raws[:, i - period]
+            np.swapaxes(generalized_feature_space, 0, 2)[period-1][1] = value
 
         generalized_feature.append(generalized_feature_space)
 
-    return np.array(generalized_feature)
+    return np.swapaxes(np.array(generalized_feature), 0, 1)
 
 
 def concat_features(generalized_direction_feature,
@@ -124,4 +128,4 @@ def concat_features(generalized_direction_feature,
                            generalized_kind_feature,
                            generalized_space_orientation_feature,
                            generalized_space_kind_feature,
-                           layer), axis=0)
+                           layer), axis=1)

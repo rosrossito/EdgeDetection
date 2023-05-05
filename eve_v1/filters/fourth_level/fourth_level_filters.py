@@ -8,7 +8,7 @@ LINE_FILTERS_NUMBER = 8
 ANGLE_FILTERS_NUMBER = 16
 
 
-def create_third_level_filters(kernel_depth):
+def create_fourth_level_filters(kernel_depth):
     kernel_size = 3
     filters = []
 

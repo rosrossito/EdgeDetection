@@ -3,7 +3,7 @@ from math import ceil
 import matplotlib.pyplot as plt
 import numpy as np
 
-from eve_v1.visualization.conversion import get_coord, convert_third_level_feature, convert_second_level_feature, \
+from eve_v1.visualization.conversion import get_coord, convert_input_level_feature, convert_second_level_feature, \
     convert_first_level_feature
 
 
@@ -50,7 +50,7 @@ def get_pixel_value_pic(img):
 def draw_kernels(fig, img, n_filters=1, i=0):
     ax = fig.add_subplot(2, n_filters, i + 1)
     ax.imshow(img, cmap='gray')
-    ax.set_title('Feature number: %s' % str((img > 0).sum()))
+    ax.set_title('Feature number: %s' % str(int(np.sum(img) * 2)))
 
     width, height = img.shape
     thresh = img.max() / 2.5
@@ -87,7 +87,7 @@ def get_pixel_value_layer_with_icon(layer, icons, n_filters=4):
         for i in range(k * 4, end):
             img = layer[0, i].data.numpy()
             draw_kernels_with_icon(fig, img, icons[i], 4, i - k * 4)
-            total_feature_number = total_feature_number + (img > 0).sum()
+            total_feature_number = total_feature_number + int(np.sum(img) * 2)
     plt.show(block=True)
     print("Total feature number in layer: " + str(total_feature_number))
 
@@ -95,7 +95,7 @@ def get_pixel_value_layer_with_icon(layer, icons, n_filters=4):
 def draw_kernels_with_icon(fig, img, icon, n_filters=1, i=0):
     ax = fig.add_subplot(2, n_filters, i + 1)
     ax.imshow(img, cmap='gray')
-    ax.set_title('Feature number: %s' % str((img > 0).sum()))
+    ax.set_title('Feature number: %s' % str(int(np.sum(img) * 2)))
 
     width, height = img.shape
     thresh = img.max() / 2.5
@@ -119,26 +119,33 @@ def get_total_picture(layer):
 
 def get_converted_picture(binary_conv_layer, manually_created_features, second_level_manually_created_features):
     coords = get_coord(binary_conv_layer)
-    img = np.zeros((17, 17), dtype="float32")
-    next_level_conversion_data = convert_third_level_feature(coords, manually_created_features)
+    next_level_conversion_data = convert_input_level_feature(coords, manually_created_features)
     next_level_conversion_data = convert_second_level_feature(next_level_conversion_data,
                                                               second_level_manually_created_features)
     pixels_coords = convert_first_level_feature(next_level_conversion_data)
-    for pixels_coord in pixels_coords:
-        img[pixels_coord[1], pixels_coord[0]] = 1
-    plt.imshow(img, cmap='gray')
-    plt.show()
+    show_built_image(pixels_coords)
 
-def get_converted_picture_first_layer(binary_conv_layer):
+def get_converted_picture_second_layer(binary_output_layer, second_level_manually_created_features):
+
+    coords = get_coord(binary_output_layer)
+    next_level_conversion_data = convert_input_level_feature(coords, second_level_manually_created_features)
+    pixels_coords = convert_first_level_feature(next_level_conversion_data)
+    show_built_image(pixels_coords)
+
+def get_converted_picture_first_layer(binary_output_layer):
     input = []
     counter = 1
-    coords = get_coord(binary_conv_layer)
-    img = np.zeros((20, 20), dtype="float32")
+    coords = get_coord(binary_output_layer)
     for coord_raw in coords:
         for coord in coord_raw:
             input.append([coord, counter])
         counter = counter + 1
     pixels_coords = convert_first_level_feature(input)
+    show_built_image(pixels_coords)
+
+def show_built_image(pixels_coords):
+    img = np.zeros((17, 17), dtype="float32")
+    # raw, column
     for pixels_coord in pixels_coords:
         img[pixels_coord[1], pixels_coord[0]] = 1
     plt.imshow(img, cmap='gray')

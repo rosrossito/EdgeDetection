@@ -10,9 +10,9 @@ def get_binary_feature_map(feature_map, threshold):
 
 def get_binary_feature_map_with_different_thresholds(feature_map, thresholds):
     binary_feature_map = []
-    for feature, threshold in zip(feature_map, thresholds):
+    for feature, threshold in zip(np.swapaxes(feature_map, 0, 1), thresholds):
         binary_feature_map.append(np.where(feature < threshold, 0, 0.5))
-    return np.array(binary_feature_map)
+    return np.swapaxes(np.array(binary_feature_map), 0, 1)
 
 
 def get_thresholds(filters):

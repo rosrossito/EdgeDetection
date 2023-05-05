@@ -32,7 +32,7 @@ def get_manually_created_feature(kernel_depth):
         reversed_feature = reversed_step - feature
 
         # lines (180 degree)
-        # parameters: kernel number, column, raw
+        # parameters: kernel number of previous layer, column, raw
         manually_created_feature.append([[reversed_feature + 1, 1, 1], [reversed_feature + 1, 2, 1]])
         manually_created_feature.append([[feature + 2, 1, 1], [feature + 2, 2, 2]])
         manually_created_feature.append([[feature + 3, 1, 1], [feature + 3, 1, 2]])

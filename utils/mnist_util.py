@@ -28,6 +28,8 @@ def load_mnist_dataset():
     test.isnull().any().describe()
 
     # Normalize the data
+    # Grayscale normalization to reduce the effect of illumination 's differences.
+    # Moreover the CNN converg faster on [0..1] data than on [0..255].
     X_train = X_train / 255.0
     test = test / 255.0
 

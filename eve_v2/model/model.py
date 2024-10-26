@@ -1,9 +1,20 @@
+from keras.optimizers import SGD
 from tensorflow.keras.optimizers import RMSprop
 from tensorflow import keras
 from tensorflow.keras import layers
 
 
 def create_model():
+    # 1 iteration
+    # loss: 0.0032 - accuracy: 0.9951 - val_loss: 0.0176 - val_accuracy: 0.9814
+    # Trainable params: 123,082,882
+
+
+    # 1 iteration (dilated convolution)
+    # loss: 0.0039 - accuracy: 0.9954 - val_loss: 0.0170 - val_accuracy: 0.9860
+    # Trainable params: 29,924,730
+
+
     # for the moment number of filters is constant (not changed).
     #Todo:
     #1. Define regions with lines/edges (ROI where kernels will be applied). Can be standard algorithm.
@@ -19,38 +30,55 @@ def create_model():
 
     inputs = keras.Input((28, 28, 1))
     # decrease resolution/precision
-    pool1 = layers.AveragePooling2D(pool_size=(2, 2))(inputs)
+    # pool1 = layers.AveragePooling2D(pool_size=(2, 2))(inputs)
 
     # convolution (create new feature in the space)
     # Same padding - to preserve dimensionality and convolve bigger with smaller features
     # (another option - Valid padding means do not any zero to the input)
     # Choose 4 size kernels
-    conv1 = layers.Conv2D(filters=120, kernel_size=(4, 4), padding='Same', activation='relu',
-                          input_shape=(14, 14, 1))(pool1)
+    conv1 = layers.Conv2D(filters=511, kernel_size=(3, 3), padding='valid', activation='relu',
+                          input_shape=(28, 28, 1))(inputs)
     # gather similar feature through the layers, decrease feature space.
     # by this, edges that are similar should be treated as the same
-    conv2 = layers.Conv2D(filters=80, kernel_size=(1, 1), padding='Same', activation='relu',
-                          input_shape=(14, 14, 120))(conv1)
-    # convolution (create new feature in the space). One feature cover 8*8 area (2 excels of 4 pixels with stride 4)
-    conv3 = layers.Conv2D(filters=1200, kernel_size=(2, 2), strides=(4, 4), padding='Same', activation='relu',
-                          input_shape=(14, 14, 80))(conv2)
+    conv2 = layers.Conv2D(filters=255, kernel_size=(1, 1), padding='Same', activation='relu',
+                          input_shape=(26, 26, 511))(conv1)
+    # convolution (create new feature in the space). One feature cover 5*5 area (2 excels of 3 pixels with dilation 2)
+    conv3 = layers.Conv2D(filters=1200, kernel_size=(2, 2), strides=(1, 1), padding='valid',
+                                   dilation_rate=(2, 2), activation='relu', input_shape=(26, 26, 255))(conv2)
     # gather similar feature through the layers, decrease feature space.
     # by this, edges that are similar should be treated as the same
     # used for generalization instead of pooling layer
-    conv4 = layers.Conv2D(filters=800, kernel_size=(1, 1), padding='Same', activation='relu',
-                              input_shape=(14, 14, 1200))(conv3)
-    # convolution (create new feature in the space). One feature cover 16*16 area (2 excels of 8 pixels with stride 8)
-    conv5 = layers.Conv2D(filters=12000, kernel_size=(2, 2), strides=(8, 8), padding='Same', activation='relu',
-                          input_shape=(14, 14, 800))(conv4)
+    conv4 = layers.Conv2D(filters=600, kernel_size=(1, 1), padding='Same', activation='relu',
+                              input_shape=(24, 24, 1200))(conv3)
+    # convolution (create new feature in the space). One feature cover 9*9 area (2 excels of 5 pixels with dilation 4)
+    conv5 = layers.Conv2D(filters=3000, kernel_size=(2, 2), strides=(1, 1), padding='valid',
+                                   dilation_rate=(4, 4), activation='relu', input_shape=(24, 24, 600))(conv4)
     # gather similar feature through the layers, decrease feature space.
     # by this, edges that are similar should be treated as the same
-    conv6 = layers.Conv2D(filters=8000, kernel_size=(1, 1), padding='Same', activation='relu',
-                          input_shape=(14, 14, 12000))(conv5)
+    conv6 = layers.Conv2D(filters=1500, kernel_size=(1, 1), padding='valid', activation='relu',
+                          input_shape=(20, 20, 3000))(conv5)
+    # convolution (create new feature in the space). One feature cover 16*16 area (2 excels of 9 pixels with dilation 7)
+    conv7 = layers.Conv2D(filters=2000, kernel_size=(2, 2), strides=(1, 1), padding='valid',
+                                   dilation_rate=(7, 7), activation='relu', input_shape=(20, 20, 1500))(conv6)
+    conv8 = layers.Conv2D(filters=1000, kernel_size=(1, 1), padding='Same', activation='relu',
+                          input_shape=(13, 13, 2000))(conv7)
+    # convolution (create new feature in the space). One feature cover 27*27 area (2 excels of 16 pixels with dilation 11)
+    conv9 = layers.Conv2D(filters=500, kernel_size=(2, 2), strides=(1, 1), padding='valid',
+                                   dilation_rate=(11, 11), activation='relu', input_shape=(13, 13, 1000))(conv8)
+    conv10 = layers.Conv2D(filters=250, kernel_size=(1, 1), padding='Same', activation='relu',
+                          input_shape=(2, 2, 500))(conv9)
 
-    flatten = layers.Flatten()(conv6)
-    dense1 = layers.Dense(512, activation="relu")(flatten)
+    # convolution (create new feature in the space). One feature cover 21*21 area (2 excels of 8 pixels with dilation 5)
+    # conv11 = layers.SeparableConv2D(filters=100, kernel_size=(2, 2), strides=(1, 1), padding='valid',
+    #                                dilation_rate=(6, 6), activation='relu', input_shape=(8, 8, 500))(conv10)
+    # conv12 = layers.Conv2D(filters=50, kernel_size=(1, 1), padding='Same', activation='relu',
+    #                       input_shape=(2, 2, 100))(conv11)
+    # conv13 = layers.Conv2D(filters=100, kernel_size=(2, 2), padding='valid', activation='relu',
+    #                       input_shape=(2, 2, 500))(conv10)
+    flatten = layers.Flatten()(conv10)
+    # dense1 = layers.Dense(50, activation="relu")(flatten)
     #last layer. Here 10 digits
-    dense2 = layers.Dense(10, activation="softmax")(dense1)
+    dense2 = layers.Dense(10, activation="softmax")(flatten)
 
     model = keras.Model(inputs, dense2)
 

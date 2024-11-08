@@ -1,14 +1,15 @@
 import argparse
 
-import keras
 import pandas as pd
+from tensorflow import keras
+from tensorflow.keras.models import load_model
 
 from eve_v2.model.model import create_model
 from eve_v2.model.model_runner import train_model, predict
+from utils.filter_visualizer import visualize
 from utils.mnist_util import load_mnist_dataset
-from utils.vizualize_service import viz_filter
 
-MODEL_PATH = "./eve2_model.h5"
+MODEL_PATH = "./eve_model (3).h5"
 
 
 def get_train_args():
@@ -26,8 +27,8 @@ def execute(mode):
         history = train_model(model, X_train, X_val, Y_train, Y_val, MODEL_PATH)
 
     elif mode == "visualize":
-        model = keras.models.load_model(MODEL_PATH)
-        viz_filter(model)
+        model = load_model(MODEL_PATH)
+        visualize(model)
 
     elif mode == "predict":
         model = keras.models.load_model(MODEL_PATH)

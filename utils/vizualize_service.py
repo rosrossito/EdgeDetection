@@ -10,7 +10,7 @@ from eve_v1.visualization.conversion import get_coord, convert_input_level_featu
 
 def viz_filter(model):
 
-    # Iterate thru all the layers of the model
+    # Iterate through all the layers of the model
     for layer in model.layers:
         # check for convolutional layer
         if 'conv' not in layer.name:

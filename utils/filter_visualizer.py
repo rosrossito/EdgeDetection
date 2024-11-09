@@ -27,14 +27,13 @@ def visualize(model):
     model.summary()
     layer_output = get_layer_features(model)
     feature_extractor = keras.Model(inputs=model.inputs, outputs=layer_output)
-    print(layer_output.shape)
 
     """
     ## Visualize filters in the target layer
     """
     # Compute image inputs that maximize per-filter activations
     all_imgs = []
-    for filter_index in range(200):
+    for filter_index in range(layer_output.shape[3]):
         print("Processing filter %d" % (filter_index,))
         loss, img = visualize_filter(filter_index, feature_extractor)
         all_imgs.append(img)

@@ -1,7 +1,6 @@
-from keras.optimizers import SGD
-from tensorflow.keras.optimizers import RMSprop
 from tensorflow import keras
 from tensorflow.keras import layers
+from tensorflow.keras.optimizers import RMSprop
 
 
 def create_model():
@@ -10,7 +9,7 @@ def create_model():
     # Trainable params: 123,082,882
 
 
-    # 1 iteration (dilated convolution)
+    # 2 iteration (dilated convolution)
     # loss: 0.0039 - accuracy: 0.9954 - val_loss: 0.0170 - val_accuracy: 0.9860
     # Trainable params: 29,924,730
 
@@ -35,16 +34,15 @@ def create_model():
     # convolution (create new feature in the space)
     # Same padding - to preserve dimensionality and convolve bigger with smaller features
     # (another option - Valid padding means do not any zero to the input)
-    # Choose 4 size kernels
-    conv1 = layers.Conv2D(filters=511, kernel_size=(3, 3), padding='valid', activation='relu',
+    conv1 = layers.Conv2D(filters=50, kernel_size=(3, 3), padding='valid', activation='relu',
                           input_shape=(28, 28, 1))(inputs)
     # gather similar feature through the layers, decrease feature space.
     # by this, edges that are similar should be treated as the same
-    conv2 = layers.Conv2D(filters=255, kernel_size=(1, 1), padding='Same', activation='relu',
-                          input_shape=(26, 26, 511))(conv1)
+    conv2 = layers.Conv2D(filters=30, kernel_size=(1, 1), padding='Same', activation='relu',
+                          input_shape=(26, 26, 50))(conv1)
     # convolution (create new feature in the space). One feature cover 5*5 area (2 excels of 3 pixels with dilation 2)
     conv3 = layers.Conv2D(filters=1200, kernel_size=(2, 2), strides=(1, 1), padding='valid',
-                                   dilation_rate=(2, 2), activation='relu', input_shape=(26, 26, 255))(conv2)
+                                   dilation_rate=(2, 2), activation='relu', input_shape=(26, 26, 30))(conv2)
     # gather similar feature through the layers, decrease feature space.
     # by this, edges that are similar should be treated as the same
     # used for generalization instead of pooling layer

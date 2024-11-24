@@ -7,6 +7,10 @@ def get_MNIST_train_example():
     X_train, _, _, _, _ = load_mnist_dataset()
     return X_train[0][:, :, 0]
 
+def get_input_train_example():
+    X_train, _, _, _, _ = load_mnist_dataset()
+    return X_train[-1::]
+
 def load_mnist_dataset():
     np.random.seed(2)
     train = pd.read_csv("input/train.csv")

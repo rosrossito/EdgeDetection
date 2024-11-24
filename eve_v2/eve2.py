@@ -6,7 +6,7 @@ from tensorflow.keras.models import load_model
 
 from eve_v2.model.model import create_model
 from eve_v2.model.model_runner import train_model, predict
-from utils.filter_visualizer import visualize
+from utils.filter_visualizer_with_prediction import visualize
 from utils.mnist_util import load_mnist_dataset
 
 MODEL_PATH = "./eve_model (3).h5"

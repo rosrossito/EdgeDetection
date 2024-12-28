@@ -25,6 +25,6 @@ def draw(imgs, format=None):
     plt.figure(figsize=(20, 40))
     for i in range(min(imgs.shape[-1], 100)):
         plt_idx = i + 1
-        plt.subplot(200, 16, plt_idx)
+        plt.subplot(20, 16, plt_idx)
         plt.imshow(imgs[0, :, :, i], format)
     plt.show()

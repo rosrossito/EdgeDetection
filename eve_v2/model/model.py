@@ -9,9 +9,13 @@ def create_model():
     # Trainable params: 123,082,882
 
 
-    # 2 iteration (dilated convolution)
+    # 2 iteration (dilated convolution) (eve_model.h5)
     # loss: 0.0039 - accuracy: 0.9954 - val_loss: 0.0170 - val_accuracy: 0.9860
     # Trainable params: 29,924,730
+
+    # 3 iteration (tanh) (eve_model_tanh.h5)
+    # loss: 0.0215 - accuracy: 0.9644 - val_loss: 0.0295 - val_accuracy: 0.9564
+    # Trainable params: 28,711,090
 
 
     # for the moment number of filters is constant (not changed).
@@ -34,36 +38,36 @@ def create_model():
     # convolution (create new feature in the space)
     # Same padding - to preserve dimensionality and convolve bigger with smaller features
     # (another option - Valid padding means do not any zero to the input)
-    conv1 = layers.Conv2D(filters=50, kernel_size=(3, 3), padding='valid', activation='relu',
+    conv1 = layers.Conv2D(filters=50, kernel_size=(3, 3), padding='valid', activation='tanh',
                           input_shape=(28, 28, 1))(inputs)
     # gather similar feature through the layers, decrease feature space.
     # by this, edges that are similar should be treated as the same
-    conv2 = layers.Conv2D(filters=30, kernel_size=(1, 1), padding='Same', activation='relu',
+    conv2 = layers.Conv2D(filters=30, kernel_size=(1, 1), padding='Same', activation='tanh',
                           input_shape=(26, 26, 50))(conv1)
     # convolution (create new feature in the space). One feature cover 5*5 area (2 excels of 3 pixels with dilation 2)
     conv3 = layers.Conv2D(filters=1200, kernel_size=(2, 2), strides=(1, 1), padding='valid',
-                                   dilation_rate=(2, 2), activation='relu', input_shape=(26, 26, 30))(conv2)
+                                   dilation_rate=(2, 2), activation='tanh', input_shape=(26, 26, 30))(conv2)
     # gather similar feature through the layers, decrease feature space.
     # by this, edges that are similar should be treated as the same
     # used for generalization instead of pooling layer
-    conv4 = layers.Conv2D(filters=600, kernel_size=(1, 1), padding='Same', activation='relu',
+    conv4 = layers.Conv2D(filters=600, kernel_size=(1, 1), padding='Same', activation='tanh',
                               input_shape=(24, 24, 1200))(conv3)
     # convolution (create new feature in the space). One feature cover 9*9 area (2 excels of 5 pixels with dilation 4)
     conv5 = layers.Conv2D(filters=3000, kernel_size=(2, 2), strides=(1, 1), padding='valid',
-                                   dilation_rate=(4, 4), activation='relu', input_shape=(24, 24, 600))(conv4)
+                                   dilation_rate=(4, 4), activation='tanh', input_shape=(24, 24, 600))(conv4)
     # gather similar feature through the layers, decrease feature space.
     # by this, edges that are similar should be treated as the same
-    conv6 = layers.Conv2D(filters=1500, kernel_size=(1, 1), padding='valid', activation='relu',
+    conv6 = layers.Conv2D(filters=1500, kernel_size=(1, 1), padding='valid', activation='tanh',
                           input_shape=(20, 20, 3000))(conv5)
     # convolution (create new feature in the space). One feature cover 16*16 area (2 excels of 9 pixels with dilation 7)
     conv7 = layers.Conv2D(filters=2000, kernel_size=(2, 2), strides=(1, 1), padding='valid',
-                                   dilation_rate=(7, 7), activation='relu', input_shape=(20, 20, 1500))(conv6)
-    conv8 = layers.Conv2D(filters=1000, kernel_size=(1, 1), padding='Same', activation='relu',
+                                   dilation_rate=(7, 7), activation='tanh', input_shape=(20, 20, 1500))(conv6)
+    conv8 = layers.Conv2D(filters=1000, kernel_size=(1, 1), padding='Same', activation='tanh',
                           input_shape=(13, 13, 2000))(conv7)
     # convolution (create new feature in the space). One feature cover 27*27 area (2 excels of 16 pixels with dilation 11)
     conv9 = layers.Conv2D(filters=500, kernel_size=(2, 2), strides=(1, 1), padding='valid',
-                                   dilation_rate=(11, 11), activation='relu', input_shape=(13, 13, 1000))(conv8)
-    conv10 = layers.Conv2D(filters=250, kernel_size=(1, 1), padding='Same', activation='relu',
+                                   dilation_rate=(11, 11), activation='tanh', input_shape=(13, 13, 1000))(conv8)
+    conv10 = layers.Conv2D(filters=250, kernel_size=(1, 1), padding='Same', activation='tanh',
                           input_shape=(2, 2, 500))(conv9)
 
     # convolution (create new feature in the space). One feature cover 21*21 area (2 excels of 8 pixels with dilation 5)

@@ -17,6 +17,9 @@ def create_model():
     # loss: 0.0215 - accuracy: 0.9644 - val_loss: 0.0295 - val_accuracy: 0.9564
     # Trainable params: 28,711,090
 
+    # 4 iteration (tanh + 2x2 first layer) (eve_model_2х2_tanh.h5)
+    # loss: 0.0237 - accuracy: 0.9617 - val_loss: 0.0281 - val_accuracy: 0.9562
+    # Trainable params: 30,185,935
 
     # for the moment number of filters is constant (not changed).
     #Todo:
@@ -38,15 +41,17 @@ def create_model():
     # convolution (create new feature in the space)
     # Same padding - to preserve dimensionality and convolve bigger with smaller features
     # (another option - Valid padding means do not any zero to the input)
-    conv1 = layers.Conv2D(filters=50, kernel_size=(3, 3), padding='valid', activation='tanh',
+    conv1 = layers.Conv2D(filters=15, kernel_size=(2, 2), padding='valid', activation='tanh',
                           input_shape=(28, 28, 1))(inputs)
+    conv1_1 = layers.Conv2D(filters=500, kernel_size=(2, 2), padding='valid', activation='tanh',
+                          input_shape=(27, 27, 15))(conv1)
     # gather similar feature through the layers, decrease feature space.
     # by this, edges that are similar should be treated as the same
-    conv2 = layers.Conv2D(filters=30, kernel_size=(1, 1), padding='Same', activation='tanh',
-                          input_shape=(26, 26, 50))(conv1)
+    conv2 = layers.Conv2D(filters=300, kernel_size=(1, 1), padding='Same', activation='tanh',
+                          input_shape=(26, 26, 500))(conv1_1)
     # convolution (create new feature in the space). One feature cover 5*5 area (2 excels of 3 pixels with dilation 2)
     conv3 = layers.Conv2D(filters=1200, kernel_size=(2, 2), strides=(1, 1), padding='valid',
-                                   dilation_rate=(2, 2), activation='tanh', input_shape=(26, 26, 30))(conv2)
+                                   dilation_rate=(2, 2), activation='tanh', input_shape=(26, 26, 300))(conv2)
     # gather similar feature through the layers, decrease feature space.
     # by this, edges that are similar should be treated as the same
     # used for generalization instead of pooling layer
